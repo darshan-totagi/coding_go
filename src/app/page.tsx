@@ -56,7 +56,7 @@ export default function LandingPage() {
     return quicksort(left) + middle + right`;
 
   return (
-    <div className="flex flex-col min-h-screen relative overflow-hidden bg-mesh-dark">
+    <div className="flex flex-col min-h-screen relative overflow-x-clip bg-mesh-dark">
       {/* Background radial blurs */}
       <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-brand-purple-glow/10 blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-[30%] right-[-10%] w-[500px] h-[500px] rounded-full bg-brand-cyan-glow/10 blur-[120px] pointer-events-none"></div>

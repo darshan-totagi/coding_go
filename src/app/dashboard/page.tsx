@@ -74,10 +74,10 @@ export default function DashboardPage() {
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main Workspace */}
-      <div className="flex-1 flex flex-col overflow-y-auto">
+      <div className="flex-1 flex flex-col overflow-hidden">
         <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
-        <main className="p-6 max-w-7xl w-full mx-auto space-y-6 flex-grow">
+        <main className="p-6 max-w-7xl w-full mx-auto space-y-6 flex-grow overflow-y-auto text-left">
           {/* Greeting Banner */}
           <div className="p-6 rounded-2xl glass-panel-glow border border-brand-purple-500/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative overflow-hidden">
             <div className="absolute top-[-30px] right-[-30px] w-32 h-32 bg-brand-purple-500/10 rounded-full blur-2xl"></div>
@@ -321,10 +321,11 @@ export default function DashboardPage() {
                 </div>
               </div>
             </div>
+            <div className="pt-12">
+              <Footer />
+            </div>
           </div>
         </main>
-
-        <Footer />
       </div>
     </div>
   );

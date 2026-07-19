@@ -6,6 +6,7 @@ import { useApp } from "@/context/AppContext";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
 import { Footer } from "@/components/Footer";
+import { SubNavbar } from "@/components/SubNavbar";
 import { problems, Problem } from "@/data/problems";
 import Editor from "@monaco-editor/react";
 import {
@@ -184,6 +185,7 @@ No compile syntax errors or logical bugs found! The code structure fully passes 
 
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        <SubNavbar />
 
         {/* Conditional Rendering: Code Editor Workspace OR Problem Library List */}
         {currentProblem ? (
@@ -669,11 +671,11 @@ No compile syntax errors or logical bugs found! The code structure fully passes 
             {filteredProblems.length > 50 && (
               <p className="text-[10px] text-gray-500 text-center">Showing first 50 results. Narrow down using filters.</p>
             )}
+            <div className="pt-6">
+              <Footer />
+            </div>
           </main>
         )}
-
-        {/* Footer shown on list, not in full editor */}
-        {!problemId && <Footer />}
       </div>
     </div>
   );

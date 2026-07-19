@@ -8,9 +8,11 @@ import { useApp } from "@/context/AppContext";
 interface RazorpayModalProps {
   isOpen: boolean;
   onClose: () => void;
+  price?: number;
+  planName?: string;
 }
 
-export const RazorpayModal: React.FC<RazorpayModalProps> = ({ isOpen, onClose }) => {
+export const RazorpayModal: React.FC<RazorpayModalProps> = ({ isOpen, onClose, price = 499, planName = "Codeplace Premium (1 Year)" }) => {
   const { purchasePremium } = useApp();
   const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
@@ -20,7 +22,7 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({ isOpen, onClose })
   const [isProcessing, setIsProcessing] = useState(false);
   const [isDone, setIsDone] = useState(false);
 
-  const basePrice = 499;
+  const basePrice = price;
   const gst = Math.round(basePrice * 0.18);
   const finalPrice = Math.max(0, basePrice + gst - discount);
 
@@ -73,7 +75,7 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({ isOpen, onClose })
             {/* Purchase Details */}
             <div className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-3">
               <div className="flex justify-between items-center text-sm">
-                <span className="text-gray-400">Codeplace Premium (1 Year)</span>
+                <span className="text-gray-400">{planName}</span>
                 <span className="font-semibold text-white">₹{basePrice}</span>
               </div>
               <div className="flex justify-between items-center text-sm">

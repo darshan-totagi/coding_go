@@ -5,6 +5,7 @@ import { useApp } from "@/context/AppContext";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
 import { Footer } from "@/components/Footer";
+import { SubNavbar } from "@/components/SubNavbar";
 import { motion } from "framer-motion";
 import {
   FileText,
@@ -93,12 +94,13 @@ export default function ResumeBuilderPage() {
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       </div>
 
-      <div className="flex-1 flex flex-col overflow-y-auto">
+      <div className="flex-1 flex flex-col overflow-hidden">
         <div className="print:hidden">
           <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+          <SubNavbar />
         </div>
 
-        <main className="p-6 max-w-7xl w-full mx-auto space-y-6 flex-grow text-left">
+        <main className="p-6 max-w-7xl w-full mx-auto space-y-6 flex-grow overflow-y-auto text-left">
           <div className="border-b border-white/5 pb-4 print:hidden">
             <h1 className="text-2xl md:text-3xl font-extrabold text-white flex items-center gap-2">
               ATS Resume Builder & Auditor <FileText className="w-6 h-6 text-brand-purple-400" />

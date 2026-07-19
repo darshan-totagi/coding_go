@@ -3,6 +3,35 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import confetti from "canvas-confetti";
 
+export interface Badge {
+  id: string;
+  name: string;
+  icon: string;
+  desc: string;
+  date: string;
+}
+
+export interface BadgeDefinition {
+  id: string;
+  name: string;
+  icon: string;
+  desc: string;
+  requirementType: "xp" | "coins" | "problems" | "resumeScore";
+  requirementValue: number;
+}
+
+export const ALL_BADGES: BadgeDefinition[] = [
+  { id: "badge-solved-1", name: "First Blood", icon: "🩸", desc: "Solved first coding question", requirementType: "problems", requirementValue: 1 },
+  { id: "badge-solved-5", name: "Problem Solver", icon: "🧩", desc: "Solved 5+ coding problems", requirementType: "problems", requirementValue: 5 },
+  { id: "badge-solved-10", name: "Algorithmic Master", icon: "🧙‍♂️", desc: "Solved 10+ coding problems", requirementType: "problems", requirementValue: 10 },
+  { id: "badge-xp-500", name: "Code Apprentice", icon: "📜", desc: "Earned 500+ XP points", requirementType: "xp", requirementValue: 500 },
+  { id: "badge-xp-1000", name: "Code Specialist", icon: "🛠️", desc: "Earned 1000+ XP points", requirementType: "xp", requirementValue: 1000 },
+  { id: "badge-xp-2000", name: "Grandmaster", icon: "🌌", desc: "Earned 2000+ XP points", requirementType: "xp", requirementValue: 2000 },
+  { id: "badge-coins-200", name: "Coin Collector", icon: "🪙", desc: "Acquired 200+ Codecoins", requirementType: "coins", requirementValue: 200 },
+  { id: "badge-coins-500", name: "Treasure Hunter", icon: "👑", desc: "Acquired 500+ Codecoins", requirementType: "coins", requirementValue: 500 },
+  { id: "badge-resume-80", name: "Resume Perfectionist", icon: "📄", desc: "Achieved ATS resume score of 80+", requirementType: "resumeScore", requirementValue: 80 }
+];
+
 export interface UserProfile {
   id: string;
   name: string;
@@ -17,7 +46,7 @@ export interface UserProfile {
   leaderboardRank: number;
   solvedProblems: string[]; // Problem IDs solved
   weakTopics: string[];
-  badges: { id: string; name: string; icon: string; desc: string; date: string }[];
+  badges: Badge[];
   heatmap: { [date: string]: number }; // e.g., "2026-07-16": 3 (representing count of solutions)
   bookmarks: string[]; // Problem IDs bookmarked
   notes: { [problemId: string]: string }; // problemId -> notes content
@@ -39,6 +68,8 @@ interface AppContextType {
   updateResumeScore: (score: number, details: any) => void;
   addCoins: (amount: number) => void;
   triggerConfetti: () => void;
+  newlyUnlockedBadge: Badge | null;
+  clearNewlyUnlockedBadge: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -88,6 +119,11 @@ const defaultUser: UserProfile = {
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(false);
+  const [newlyUnlockedBadge, setNewlyUnlockedBadge] = useState<Badge | null>(null);
+
+  const clearNewlyUnlockedBadge = () => {
+    setNewlyUnlockedBadge(null);
+  };
 
   useEffect(() => {
     // Load session mock
@@ -99,10 +135,54 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, []);
 
+  const checkAndAwardBadges = (updatedUser: UserProfile): UserProfile => {
+    const newlyAwarded: Badge[] = [];
+    const todayStr = new Date().toISOString().split("T")[0];
+
+    ALL_BADGES.forEach((badgeDef) => {
+      const hasBadge = updatedUser.badges.some((b) => b.id === badgeDef.id);
+      if (hasBadge) return;
+
+      let meetsRequirement = false;
+      if (badgeDef.requirementType === "xp") {
+        meetsRequirement = updatedUser.xp >= badgeDef.requirementValue;
+      } else if (badgeDef.requirementType === "coins") {
+        meetsRequirement = updatedUser.coins >= badgeDef.requirementValue;
+      } else if (badgeDef.requirementType === "problems") {
+        meetsRequirement = updatedUser.solvedProblems.length >= badgeDef.requirementValue;
+      } else if (badgeDef.requirementType === "resumeScore") {
+        meetsRequirement = updatedUser.resumeScore >= badgeDef.requirementValue;
+      }
+
+      if (meetsRequirement) {
+        const newBadge: Badge = {
+          id: badgeDef.id,
+          name: badgeDef.name,
+          icon: badgeDef.icon,
+          desc: badgeDef.desc,
+          date: todayStr,
+        };
+        updatedUser.badges = [...updatedUser.badges, newBadge];
+        newlyAwarded.push(newBadge);
+      }
+    });
+
+    if (newlyAwarded.length > 0) {
+      setNewlyUnlockedBadge(newlyAwarded[newlyAwarded.length - 1]);
+      triggerConfetti();
+    }
+
+    return updatedUser;
+  };
+
   const saveUser = (updated: UserProfile | null) => {
-    setUser(updated);
+    let finalUser = updated;
     if (updated) {
-      localStorage.setItem("codeplace_user", JSON.stringify(updated));
+      finalUser = checkAndAwardBadges({ ...updated });
+    }
+    setUser(finalUser);
+    if (finalUser) {
+      localStorage.setItem("codeplace_user", JSON.stringify(finalUser));
     } else {
       localStorage.removeItem("codeplace_user");
     }
@@ -162,17 +242,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const currentXpBoundary = user.level * 150;
     let newLevel = user.level;
 
+    let updatedBadges = [...user.badges];
     if (newXp >= currentXpBoundary) {
       newLevel += 1;
       triggerConfetti();
       // Unlocked a badge for level up!
-      user.badges.push({
+      const levelUpBadge = {
         id: `badge-level-${newLevel}`,
         name: `Level ${newLevel} Titan`,
         icon: "🏆",
         desc: `Reached coding profile Level ${newLevel}`,
         date: new Date().toISOString().split("T")[0]
-      });
+      };
+      updatedBadges = [...updatedBadges, levelUpBadge];
+      setNewlyUnlockedBadge(levelUpBadge);
     } else {
       triggerConfetti();
     }
@@ -198,7 +281,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       coins: user.coins + coinsAwarded,
       streak: newStreak,
       heatmap: newHeatmap,
-      rating: user.rating + (difficulty === "Easy" ? 5 : difficulty === "Medium" ? 12 : 25)
+      rating: user.rating + (difficulty === "Easy" ? 5 : difficulty === "Medium" ? 12 : 25),
+      badges: updatedBadges
     };
 
     saveUser(updatedUser);
@@ -237,7 +321,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     triggerConfetti();
   };
 
-  const spinWheel = () => {
+  const spinWheel = (): { type: "coins" | "xp" | "premium_day"; amount: number; message: string } => {
     if (!user) return { type: "coins", amount: 0, message: "No active user" };
     const outcomes: { type: "coins" | "xp" | "premium_day"; amount: number; message: string }[] = [
       { type: "coins", amount: 50, message: "Won 50 Codecoins!" },
@@ -296,7 +380,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         spinWheel,
         updateResumeScore,
         addCoins,
-        triggerConfetti
+        triggerConfetti,
+        newlyUnlockedBadge,
+        clearNewlyUnlockedBadge
       }}
     >
       {children}

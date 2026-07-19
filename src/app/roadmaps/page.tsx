@@ -49,10 +49,10 @@ export default function RoadmapsPage() {
     <div className="flex h-screen bg-[#030303] overflow-hidden">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="flex-1 flex flex-col overflow-y-auto">
+      <div className="flex-1 flex flex-col overflow-hidden">
         <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
-        <main className="p-6 max-w-7xl w-full mx-auto space-y-6 flex-grow text-left">
+        <main className="p-6 max-w-7xl w-full mx-auto space-y-6 flex-grow overflow-y-auto text-left">
           <div className="border-b border-white/5 pb-4">
             <h1 className="text-2xl md:text-3xl font-extrabold text-white flex items-center gap-2">
               Career Learning paths <Map className="w-6 h-6 text-brand-purple-400" />
@@ -212,10 +212,11 @@ export default function RoadmapsPage() {
                 </div>
               )}
             </div>
+            <div className="pt-12">
+              <Footer />
+            </div>
           </div>
         </main>
-
-        <Footer />
       </div>
     </div>
   );
