@@ -104,7 +104,7 @@ export default function LandingPage() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="flex flex-wrap gap-4 pt-2"
           >
-            <Link href={user ? "/dashboard" : "/auth"}>
+            <Link href={user ? "/profile" : "/auth"}>
               <button className="px-8 py-3 bg-gradient-to-r from-brand-purple-600 to-brand-cyan-500 hover:from-brand-purple-700 hover:to-brand-cyan-600 text-white rounded-full font-bold text-sm shadow-glass-glow flex items-center gap-2 group transition-all">
                 Enter Arena
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -362,7 +362,7 @@ export default function LandingPage() {
               </h3>
               <p className="text-sm text-gray-400">For developers aiming to crack FAANG & top tech hiring interviews.</p>
               <div className="text-4xl font-extrabold text-white">
-                ₹499 <span className="text-sm text-gray-500 font-normal">/ year</span>
+                ₹299 <span className="text-sm text-gray-500 font-normal">/ year</span>
               </div>
               <ul className="space-y-3 text-sm text-gray-300">
                 <li className="flex items-center gap-2 text-brand-cyan-400">✓ Unlimited AI Coding Mentor & Explanations</li>

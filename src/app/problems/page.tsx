@@ -139,7 +139,7 @@ function ProblemsContent() {
   const handleAiAction = async (action: "explain" | "optimize" | "find-bugs") => {
     if (!user) return;
     if (!user.isPremium) {
-      alert("AI Explanations require Premium Membership. Activate your ₹499/Year access now!");
+      alert("AI Explanations require Premium Membership. Activate your ₹299/Year access now!");
       return;
     }
 

@@ -12,7 +12,7 @@ interface RazorpayModalProps {
   planName?: string;
 }
 
-export const RazorpayModal: React.FC<RazorpayModalProps> = ({ isOpen, onClose, price = 499, planName = "Codeplace Premium (1 Year)" }) => {
+export const RazorpayModal: React.FC<RazorpayModalProps> = ({ isOpen, onClose, price = 299, planName = "Codeplace Premium (1 Year)" }) => {
   const { purchasePremium } = useApp();
   const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
