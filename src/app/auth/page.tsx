@@ -21,7 +21,7 @@ export default function AuthPage() {
   // If already logged in, redirect to dashboard
   React.useEffect(() => {
     if (user) {
-      router.push("/dashboard");
+      router.push("/profile");
     }
   }, [user, router]);
 
@@ -30,7 +30,7 @@ export default function AuthPage() {
     setLoading(true);
     try {
       await login(`${provider.toLowerCase()}@codeplace.ai`, provider);
-      router.push("/dashboard");
+      router.push("/profile");
     } catch (err) {
       setError("Social login failed. Try again.");
     } finally {
@@ -69,7 +69,7 @@ export default function AuthPage() {
       const isOk = await verifyOtp(otp);
       if (isOk) {
         await login(email, "Email");
-        router.push("/dashboard");
+        router.push("/profile");
       } else {
         setError("Invalid OTP code. Enter '123456' to pass.");
       }

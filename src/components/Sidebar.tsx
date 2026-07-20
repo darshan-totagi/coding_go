@@ -5,11 +5,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useApp } from "@/context/AppContext";
 import {
-  LayoutDashboard,
+  User,
   Code2,
   Map,
   Trophy,
-  Video,
   FileText,
   MessageSquare,
   Compass,
@@ -26,11 +25,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { user } = useApp();
 
   const menuItems = [
-    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+    { name: "My Profile", href: "/profile", icon: User },
     { name: "Problem Library", href: "/problems", icon: Code2 },
     { name: "Learning Paths", href: "/roadmaps", icon: Map },
     { name: "Contests Lobby", href: "/contests", icon: Trophy },
-    { name: "AI Mock Interviews", href: "/mock-interview", icon: Video },
     { name: "Playground & Missions", href: "/gamification", icon: Gift },
     { name: "Community Forum", href: "/community", icon: MessageSquare },
   ];
@@ -82,15 +80,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
         {/* User Card inside Sidebar when not on top header */}
         {user && (
-          <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-brand-purple-500 flex items-center justify-center text-xl">
+          <Link
+            href="/profile"
+            onClick={handleLinkClick}
+            className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-brand-purple-500/30 flex items-center gap-3 transition group"
+          >
+            <div className="w-10 h-10 rounded-full bg-brand-purple-500 flex items-center justify-center text-xl group-hover:scale-105 transition-transform">
               {user.avatar}
             </div>
             <div className="overflow-hidden">
-              <p className="text-xs font-semibold text-white truncate">{user.name}</p>
+              <p className="text-xs font-semibold text-white group-hover:text-brand-cyan-400 transition truncate">{user.name}</p>
               <p className="text-[10px] text-brand-cyan-400">Score: {user.rating}</p>
             </div>
-          </div>
+          </Link>
         )}
       </div>
     </aside>

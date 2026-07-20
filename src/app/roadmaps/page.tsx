@@ -212,9 +212,9 @@ export default function RoadmapsPage() {
                 </div>
               )}
             </div>
-            <div className="pt-12">
-              <Footer />
-            </div>
+          </div>
+          <div className="pt-12">
+            <Footer />
           </div>
         </main>
       </div>

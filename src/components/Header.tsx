@@ -45,7 +45,6 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
       {/* Central Navigation Links */}
       <nav className="hidden md:flex items-center gap-8">
         {[
-          { name: "Dashboard", href: "/dashboard" },
           { name: "Explore", href: "/gamification", isExplore: true },
           { name: "Practice", href: "/problems" },
           { name: "Pricing", href: "/pricing" }
@@ -193,12 +192,12 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
                       </div>
                     </div>
                     <Link
-                      href="/dashboard"
+                      href="/profile"
                       onClick={() => setShowProfileMenu(false)}
                       className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition"
                     >
-                      <User className="w-4 h-4" />
-                      Dashboard
+                      <User className="w-4 h-4 text-brand-purple-400" />
+                      My Profile
                     </Link>
                     <button
                       onClick={() => {
