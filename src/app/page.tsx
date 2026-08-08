@@ -21,7 +21,14 @@ import {
   Heart,
   TrendingUp,
   Cpu,
-  Flame
+  Flame,
+  Flag,
+  Award,
+  Star,
+  GraduationCap,
+  Clock,
+  Lightbulb,
+  Users
 } from "lucide-react";
 
 export default function LandingPage() {
@@ -63,108 +70,93 @@ export default function LandingPage() {
 
       <Header />
 
-      {/* Hero Section */}
-      <section className="relative px-6 py-20 lg:py-32 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 z-10">
-        <div className="flex-1 space-y-6 text-left">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-purple-950/30 border border-brand-purple-500/30 text-xs font-semibold text-brand-purple-300"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            Next-Gen AI Coding Platform
-          </motion.div>
+      {/* Hero Poster Section */}
+      <section 
+        className="w-full relative py-12 md:py-16 px-6 md:px-12 border-b border-white/5"
+        style={{ 
+          backgroundColor: "#0d2757", 
+          backgroundImage: "linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px)", 
+          backgroundSize: "24px 24px" 
+        }}
+      >
+        {/* Subtle glow highlights */}
+        <div className="absolute top-0 left-[20%] w-[350px] h-[350px] rounded-full bg-blue-500/10 blur-[100px] pointer-events-none"></div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.1] text-white"
-          >
-            Master the Coding{" "}
-            <span className="bg-gradient-to-r from-brand-purple-400 via-brand-cyan-400 to-brand-purple-500 bg-clip-text text-transparent">
-              Interview
-            </span>{" "}
-            with AI.
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-gray-400 text-lg max-w-lg"
-          >
-            The premium prep arena inspired by Apple & Stripe. Get real-time code explanations, dynamic learning paths, resume audits, and gamified statistics.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex flex-wrap gap-4 pt-2"
-          >
-            <Link href={user ? "/profile" : "/auth"}>
-              <button className="px-8 py-3 bg-gradient-to-r from-brand-purple-600 to-brand-cyan-500 hover:from-brand-purple-700 hover:to-brand-cyan-600 text-white rounded-full font-bold text-sm shadow-glass-glow flex items-center gap-2 group transition-all">
-                Enter Arena
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </Link>
-            <button
-              onClick={() => setIsRazorpayOpen(true)}
-              className="px-6 py-3 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-full font-bold text-sm transition"
-            >
-              Get Premium Access
-            </button>
-          </motion.div>
-
-          {/* User statistics counter snippet */}
-          <div className="pt-6 grid grid-cols-3 gap-4 border-t border-white/10 max-w-md">
-            <div>
-              <span className="block text-2xl font-bold text-white">150+</span>
-              <span className="text-xs text-gray-500">Free Problems</span>
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-10 relative z-10 text-left">
+          {/* Left Column: Title and details */}
+          <div className="flex-1 space-y-6">
+            <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 tracking-wider uppercase bg-orange-500/10 border border-orange-500/20 px-3 py-1 rounded-full">
+              <Flag className="w-3.5 h-3.5 fill-current" />
+              Python with Beginner DSA
             </div>
-            <div>
-              <span className="block text-2xl font-bold text-brand-cyan-400">98%</span>
-              <span className="text-xs text-gray-500">Hiring Success</span>
-            </div>
-            <div>
-              <span className="block text-2xl font-bold text-brand-purple-400">24/7</span>
-              <span className="text-xs text-gray-500">AI Coding Tutor</span>
+
+            <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
+              Python with Beginner DSA
+            </h1>
+
+            <p className="text-zinc-300 text-sm sm:text-base max-w-2xl leading-relaxed">
+              Learn the basics of Python and data structures. Use practice modules to boost your coding and logic. End the roadmap with projects to showcase your Python abilities.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-4 pt-2">
+              <div className="flex items-center gap-1.5 bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-semibold px-3 py-1.5 rounded-lg select-none">
+                <Award className="w-4 h-4 text-blue-400" />
+                Certification Available
+              </div>
+
+              <div className="flex items-center gap-1 bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-semibold px-3 py-1.5 rounded-lg select-none">
+                <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                4.6 (179.6k+)
+              </div>
+
+              <Link href="/roadmaps" className="text-xs text-zinc-400 hover:text-white underline transition">
+                179.6k+ Reviews
+              </Link>
             </div>
           </div>
-        </div>
 
-        {/* Floating Snip Preview / Animation */}
-        <div className="flex-1 w-full max-w-md lg:max-w-none relative">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
-            className="rounded-2xl glass-panel p-4 border border-white/10 shadow-glass relative overflow-hidden"
-          >
-            <div className="flex justify-between items-center pb-3 border-b border-white/5 mb-3">
-              <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-brand-rose-500 block"></span>
-                <span className="w-3 h-3 rounded-full bg-brand-amber-500 block"></span>
-                <span className="w-3 h-3 rounded-full bg-brand-emerald-500 block"></span>
+          {/* Right Column: Stats & CTA Card */}
+          <div className="w-full lg:w-[380px] shrink-0">
+            <div className="rounded-2xl bg-[#081530]/80 border border-white/5 shadow-2xl p-6 backdrop-blur-md flex flex-col gap-6">
+              {/* Stat rows */}
+              <div className="grid grid-cols-3 gap-2 text-center border-b border-white/5 pb-6">
+                <div className="flex flex-col items-center gap-2">
+                  <div className="p-2 bg-blue-500/10 rounded-xl">
+                    <GraduationCap className="w-5 h-5 text-blue-400" />
+                  </div>
+                  <span className="text-xs font-bold text-white">6 Courses</span>
+                </div>
+
+                <div className="flex flex-col items-center gap-2">
+                  <div className="p-2 bg-blue-500/10 rounded-xl">
+                    <Clock className="w-5 h-5 text-blue-400" />
+                  </div>
+                  <span className="text-xs font-bold text-white">6 months</span>
+                </div>
+
+                <div className="flex flex-col items-center gap-2">
+                  <div className="p-2 bg-blue-500/10 rounded-xl">
+                    <Lightbulb className="w-5 h-5 text-blue-400" />
+                  </div>
+                  <span className="text-xs font-bold text-white">739 Problems</span>
+                </div>
               </div>
-              <span className="text-xs font-semibold text-gray-500 flex items-center gap-1">
-                <Terminal className="w-3 h-3" /> quicksort.py
-              </span>
+
+              {/* Call to action */}
+              <div className="space-y-4">
+                <Link href="/roadmaps">
+                  <button className="w-full py-3.5 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-xl font-bold text-sm shadow-[0_4px_20px_rgba(59,130,246,0.3)] transition duration-200 text-center">
+                    Start Roadmap Now
+                  </button>
+                </Link>
+
+                <div className="flex items-center justify-center gap-1.5 text-xs text-zinc-400">
+                  <Users className="w-4 h-4 text-blue-400" />
+                  <span>832,531 people already enrolled</span>
+                </div>
+              </div>
             </div>
-            <pre className="text-left font-mono text-xs text-brand-cyan-400 overflow-x-auto select-none p-2 leading-relaxed bg-black/45 rounded-lg border border-white/5">
-              <code>{codeSnippet}</code>
-            </pre>
-            {/* Interactive Float indicator */}
-            <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-              className="absolute -bottom-3 -right-3 bg-brand-purple-600/90 text-white text-[10px] px-3 py-1.5 rounded-full font-bold shadow-glass border border-brand-purple-400/20"
-            >
-              🚀 Click Run inside IDE
-            </motion.div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
