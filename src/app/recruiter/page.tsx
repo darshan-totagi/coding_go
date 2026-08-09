@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { useApp } from "@/context/AppContext";
 import { Header } from "@/components/Header";
-import { Sidebar } from "@/components/Sidebar";
 import { Footer } from "@/components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -23,7 +22,6 @@ import {
 
 export default function RecruiterPortalPage() {
   const { user } = useApp();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"recruiter" | "college">("recruiter");
 
   // Search filter
@@ -67,12 +65,11 @@ export default function RecruiterPortalPage() {
 
   return (
     <div className="flex h-screen bg-[#030303] overflow-hidden">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        <Header />
 
-        <main className="p-6 max-w-7xl w-full mx-auto space-y-6 flex-grow overflow-y-auto text-left">
+        <div className="flex-grow overflow-y-auto">
+          <main className="p-6 max-w-7xl w-full mx-auto space-y-6 text-left">
           {/* Header titles */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/5 pb-4">
             <div>
@@ -288,9 +285,9 @@ export default function RecruiterPortalPage() {
             )}
           </AnimatePresence>
         </main>
-
         <Footer />
       </div>
     </div>
+  </div>
   );
 }

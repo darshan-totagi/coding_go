@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { useApp } from "@/context/AppContext";
 import { Header } from "@/components/Header";
-import { Sidebar } from "@/components/Sidebar";
 import { Footer } from "@/components/Footer";
 import { RazorpayModal } from "@/components/RazorpayModal";
 import { motion } from "framer-motion";
@@ -23,7 +22,6 @@ import {
 
 export default function PricingPage() {
   const { user } = useApp();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState({ name: "", price: 299 });
 
@@ -90,12 +88,11 @@ export default function PricingPage() {
 
   return (
     <div className="flex h-screen bg-[#030303] overflow-hidden">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        <Header />
 
-        <main className="p-6 max-w-7xl w-full mx-auto space-y-12 flex-grow overflow-y-auto text-left">
+        <div className="flex-grow overflow-y-auto">
+          <main className="p-6 max-w-7xl w-full mx-auto space-y-12 text-left">
           {/* Header text */}
           <div className="text-center space-y-3 pt-6">
             <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight">
@@ -204,10 +201,9 @@ export default function PricingPage() {
             </div>
           </div>
 
-          <div className="pt-12">
-            <Footer />
-          </div>
-        </main>
+          </main>
+          <Footer />
+        </div>
       </div>
 
       <RazorpayModal

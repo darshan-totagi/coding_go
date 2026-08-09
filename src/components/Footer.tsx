@@ -95,7 +95,6 @@ export const Footer: React.FC = () => {
             <li><Link href="/roadmaps" className="hover:text-brand-cyan-400 transition">Learning Roadmaps</Link></li>
             <li><Link href="/contests" className="hover:text-brand-cyan-400 transition">Live Contests</Link></li>
             <li><Link href="/community" className="hover:text-brand-cyan-400 transition">Community Hub</Link></li>
-            <li><Link href="/gamification" className="hover:text-brand-cyan-400 transition">Badges & XP</Link></li>
           </ul>
         </div>
 

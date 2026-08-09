@@ -4,7 +4,6 @@ import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useApp } from "@/context/AppContext";
 import { Header } from "@/components/Header";
-import { Sidebar } from "@/components/Sidebar";
 import { Footer } from "@/components/Footer";
 import { SubNavbar } from "@/components/SubNavbar";
 import { problems, Problem } from "@/data/problems";
@@ -29,6 +28,79 @@ import {
   Layers
 } from "lucide-react";
 
+const renderInlineFormatting = (text: string) => {
+  const parts = text.split(/(\*\*.*?\*\*|`.*?`)/g);
+  return parts.map((part, index) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return (
+        <strong key={index} className="font-bold text-white">
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+    if (part.startsWith("`") && part.endsWith("`")) {
+      return (
+        <code key={index} className="px-1.5 py-0.5 rounded bg-white/10 text-brand-cyan-300 font-mono text-[11px] border border-white/5">
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+    return part;
+  });
+};
+
+const renderFormattedText = (text: string) => {
+  if (!text) return null;
+  const lines = text.split("\n");
+  return lines.map((line, idx) => {
+    const trimmed = line.trim();
+    if (trimmed.startsWith("### ")) {
+      return (
+        <h4 key={idx} className="text-sm font-bold text-white mt-4 mb-1.5 flex items-center gap-1.5">
+          {renderInlineFormatting(trimmed.substring(4))}
+        </h4>
+      );
+    }
+    if (trimmed.startsWith("## ")) {
+      return (
+        <h3 key={idx} className="text-base font-extrabold text-white mt-5 mb-2 flex items-center gap-2">
+          {renderInlineFormatting(trimmed.substring(3))}
+        </h3>
+      );
+    }
+    if (trimmed.startsWith("# ")) {
+      return (
+        <h2 key={idx} className="text-lg font-black text-white mt-6 mb-3 flex items-center gap-2">
+          {renderInlineFormatting(trimmed.substring(2))}
+        </h2>
+      );
+    }
+    if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
+      return (
+        <li key={idx} className="list-disc list-inside ml-2 text-gray-300 text-xs my-1 leading-relaxed">
+          {renderInlineFormatting(trimmed.substring(2))}
+        </li>
+      );
+    }
+    if (/^\d+\.\s/.test(trimmed)) {
+      const match = trimmed.match(/^(\d+)\.\s(.*)/);
+      if (match) {
+        return (
+          <div key={idx} className="ml-2 text-gray-300 text-xs my-1 leading-relaxed">
+            <span className="font-semibold text-white/95">{match[1]}. </span>
+            {renderInlineFormatting(match[2])}
+          </div>
+        );
+      }
+    }
+    return (
+      <p key={idx} className="text-gray-300 text-xs leading-relaxed my-1 min-h-[1em]">
+        {renderInlineFormatting(line)}
+      </p>
+    );
+  });
+};
+
 export default function ProblemsPage() {
   return (
     <Suspense fallback={<div className="p-8 text-center text-gray-400">Loading Workspace...</div>}>
@@ -43,7 +115,6 @@ function ProblemsContent() {
   const router = useRouter();
 
   const problemId = searchParams.get("id");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // List filter states
   const [searchQuery, setSearchQuery] = useState("");
@@ -181,10 +252,8 @@ No compile syntax errors or logical bugs found! The code structure fully passes 
 
   return (
     <div className="flex h-screen bg-[#030303] overflow-hidden">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        <Header />
         <SubNavbar />
 
         {/* Conditional Rendering: Code Editor Workspace OR Problem Library List */}
@@ -264,8 +333,8 @@ No compile syntax errors or logical bugs found! The code structure fully passes 
                       </span>
                     </div>
 
-                    <div className="prose prose-invert max-w-none text-gray-300 text-sm leading-relaxed whitespace-pre-wrap">
-                      {currentProblem.description}
+                    <div className="prose prose-invert max-w-none text-gray-300 text-sm leading-relaxed space-y-2">
+                      {renderFormattedText(currentProblem.description)}
                     </div>
 
                     {currentProblem.examples.map((ex, idx) => (
@@ -520,7 +589,8 @@ No compile syntax errors or logical bugs found! The code structure fully passes 
           </div>
         ) : (
           /* PROBLEM LIST VIEW */
-          <main className="p-6 max-w-7xl w-full mx-auto space-y-6 overflow-y-auto flex-grow text-left">
+          <div className="flex-grow overflow-y-auto">
+            <main className="p-6 max-w-7xl w-full mx-auto space-y-6 text-left">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/5 pb-4">
               <div>
                 <h1 className="text-2xl md:text-3xl font-extrabold text-white flex items-center gap-2">
@@ -671,10 +741,9 @@ No compile syntax errors or logical bugs found! The code structure fully passes 
             {filteredProblems.length > 50 && (
               <p className="text-[10px] text-gray-500 text-center">Showing first 50 results. Narrow down using filters.</p>
             )}
-            <div className="pt-6">
-              <Footer />
-            </div>
-          </main>
+            </main>
+            <Footer />
+          </div>
         )}
       </div>
     </div>
