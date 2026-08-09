@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { useApp } from "@/context/AppContext";
 import { Header } from "@/components/Header";
-import { Sidebar } from "@/components/Sidebar";
 import { Footer } from "@/components/Footer";
 import { problems } from "@/data/problems";
 import Link from "next/link";
@@ -24,7 +23,6 @@ import {
 
 export default function ProfilePage() {
   const { user } = useApp();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -67,14 +65,12 @@ export default function ProfilePage() {
 
   return (
     <div className="flex h-screen bg-[#030303] overflow-hidden">
-      {/* Sidebar */}
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        <Header />
 
-        <main className="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-8 flex-grow overflow-y-auto text-left">
+        <div className="flex-grow overflow-y-auto">
+          <main className="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-8 text-left">
           
           {/* User Profile Header Card */}
           <div className="glass-panel-glow p-6 sm:p-8 rounded-3xl border border-brand-purple-500/30 relative overflow-hidden">
@@ -384,12 +380,9 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Full Width Footer */}
-          <div className="pt-8">
-            <Footer />
-          </div>
-
-        </main>
+          </main>
+          <Footer />
+        </div>
       </div>
     </div>
   );

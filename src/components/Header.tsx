@@ -4,15 +4,11 @@ import React, { useState } from "react";
 import { useApp } from "@/context/AppContext";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, Flame, Trophy, Sparkles, User, LogOut, Menu, X, Sun, Zap, Megaphone, ChevronDown } from "lucide-react";
+import { Bell, Flame, Trophy, Sparkles, User, LogOut, X, Sun, Zap, Megaphone, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RazorpayModal } from "./RazorpayModal";
 
-interface HeaderProps {
-  onToggleSidebar?: () => void;
-}
-
-export const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
+export const Header: React.FC = () => {
   const { user, logout } = useApp();
   const pathname = usePathname();
   const [showNotifications, setShowNotifications] = useState(false);
@@ -64,13 +60,8 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
       </AnimatePresence>
 
       <header className="w-full bg-[#0a0a0c] border-b border-white/5 py-4 px-6 flex items-center justify-between">
-        {/* Left side: Hamburger + Logo */}
+        {/* Left side: Logo */}
         <div className="flex items-center gap-4">
-          {onToggleSidebar && (
-            <button onClick={onToggleSidebar} className="lg:hidden text-gray-400 hover:text-white transition">
-              <Menu className="w-6 h-6" />
-            </button>
-          )}
           <Link href="/" className="flex items-center gap-2.5 select-none group">
             {/* Custom Chef Hat Logo container */}
             <div className="relative flex items-center justify-center p-1.5 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/15 border border-orange-500/30 shadow-[0_0_15px_rgba(249,115,22,0.15)] group-hover:border-orange-500/50 transition-all duration-300">

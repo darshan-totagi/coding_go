@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { useApp } from "@/context/AppContext";
 import { Header } from "@/components/Header";
-import { Sidebar } from "@/components/Sidebar";
 import { Footer } from "@/components/Footer";
 import { contests } from "@/data/contests";
 import { motion } from "framer-motion";
@@ -11,7 +10,6 @@ import { Trophy, Calendar, Users, Zap, CheckCircle } from "lucide-react";
 
 export default function ContestsPage() {
   const { user } = useApp();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [registered, setRegistered] = useState<string[]>([]);
 
   if (!user) return null;
@@ -24,12 +22,11 @@ export default function ContestsPage() {
 
   return (
     <div className="flex h-screen bg-[#030303] overflow-hidden">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        <Header />
 
-        <main className="p-6 max-w-7xl w-full mx-auto space-y-6 flex-grow overflow-y-auto text-left">
+        <div className="flex-grow overflow-y-auto">
+          <main className="p-6 max-w-7xl w-full mx-auto space-y-6 text-left">
           <div className="border-b border-white/5 pb-4">
             <h1 className="text-2xl md:text-3xl font-extrabold text-white flex items-center gap-2">
               Coding Contests & Tournaments <Trophy className="w-6 h-6 text-brand-purple-400" />
@@ -95,10 +92,9 @@ export default function ContestsPage() {
               })}
             </div>
           </div>
-          <div className="pt-12">
-            <Footer />
-          </div>
-        </main>
+          </main>
+          <Footer />
+        </div>
       </div>
     </div>
   );
