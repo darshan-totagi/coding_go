@@ -34,6 +34,8 @@ import {
 export default function LandingPage() {
   const { user } = useApp();
   const [isRazorpayOpen, setIsRazorpayOpen] = useState(false);
+  const [selectedPlanPrice, setSelectedPlanPrice] = useState(499);
+  const [selectedPlanName, setSelectedPlanName] = useState("Premium Access");
   const [billingPeriod, setBillingPeriod] = useState<"annual" | "monthly">("annual");
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
@@ -321,7 +323,7 @@ export default function LandingPage() {
           <p className="text-gray-400 text-sm">Choose the plan that matches your career preparation goals.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {/* Free plan */}
           <div className="glass-panel p-8 rounded-2xl border border-white/10 text-left space-y-6 flex flex-col justify-between">
             <div className="space-y-4">
@@ -354,7 +356,7 @@ export default function LandingPage() {
               </h3>
               <p className="text-sm text-gray-400">For developers aiming to crack FAANG & top tech hiring interviews.</p>
               <div className="text-4xl font-extrabold text-white">
-                ₹299 <span className="text-sm text-gray-500 font-normal">/ year</span>
+                ₹499 <span className="text-sm text-gray-500 font-normal">/ year</span>
               </div>
               <ul className="space-y-3 text-sm text-gray-300">
                 <li className="flex items-center gap-2 text-brand-cyan-400">✓ Unlimited AI Coding Mentor & Explanations</li>
@@ -365,10 +367,44 @@ export default function LandingPage() {
               </ul>
             </div>
             <button
-              onClick={() => setIsRazorpayOpen(true)}
+              onClick={() => {
+                setSelectedPlanPrice(499);
+                setSelectedPlanName("Premium Access (1 Year)");
+                setIsRazorpayOpen(true);
+              }}
               className="w-full py-2.5 bg-brand-purple-600 hover:bg-brand-purple-700 text-white rounded-xl text-sm font-bold shadow-glass-glow transition"
             >
               Get Premium Access
+            </button>
+          </div>
+
+          {/* Lifetime Plan */}
+          <div className="glass-panel p-8 rounded-2xl border border-white/10 text-left space-y-6 flex flex-col justify-between hover:border-brand-purple-500/40 transition duration-300">
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                Lifetime Access <Trophy className="w-4 h-4 text-brand-purple-400" />
+              </h3>
+              <p className="text-sm text-gray-400">Pay once, unlock the entire platform forever.</p>
+              <div className="text-4xl font-extrabold text-white">
+                ₹999 <span className="text-sm text-gray-500 font-normal">one-time</span>
+              </div>
+              <ul className="space-y-3 text-sm text-gray-300">
+                <li className="flex items-center gap-2 text-brand-purple-300">✓ Everything in Premium Plan</li>
+                <li className="flex items-center gap-2 text-brand-purple-300">✓ Lifetime Unlimited Platform Access</li>
+                <li className="flex items-center gap-2 text-brand-purple-300">✓ All Future Courses & System Design Additions</li>
+                <li className="flex items-center gap-2 text-brand-purple-300">✓ VIP Discord & Community Spotlight</li>
+                <li className="flex items-center gap-2 text-brand-purple-300">✓ Priority Recruiter Resume Visibility</li>
+              </ul>
+            </div>
+            <button
+              onClick={() => {
+                setSelectedPlanPrice(999);
+                setSelectedPlanName("Lifetime Access");
+                setIsRazorpayOpen(true);
+              }}
+              className="w-full py-2.5 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-xl text-sm font-semibold transition"
+            >
+              Get Lifetime Access
             </button>
           </div>
         </div>
@@ -409,7 +445,12 @@ export default function LandingPage() {
       <Footer />
 
       {/* Razorpay simulation checkout */}
-      <RazorpayModal isOpen={isRazorpayOpen} onClose={() => setIsRazorpayOpen(false)} />
+      <RazorpayModal
+        isOpen={isRazorpayOpen}
+        onClose={() => setIsRazorpayOpen(false)}
+        price={selectedPlanPrice}
+        planName={selectedPlanName}
+      />
     </div>
   );
 }
