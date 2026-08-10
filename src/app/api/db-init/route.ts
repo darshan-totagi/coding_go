@@ -5,7 +5,7 @@ import { problems } from "@/data/problems";
 export async function GET() {
   try {
     // 1. Create problems table
-    await sql(`
+    await sql`
       CREATE TABLE IF NOT EXISTS problems (
         id TEXT PRIMARY KEY,
         title TEXT NOT NULL,
@@ -23,14 +23,16 @@ export async function GET() {
         video_url TEXT DEFAULT '',
         hints TEXT[] NOT NULL DEFAULT '{}'
       );
-    `);
+    `;
 
     // 2. Create users table
-    await sql(`
+    await sql`DROP TABLE IF EXISTS users CASCADE;`;
+    await sql`
       CREATE TABLE IF NOT EXISTS users (
         id TEXT PRIMARY KEY,
         name TEXT,
         email TEXT UNIQUE NOT NULL,
+        password_hash TEXT,
         avatar TEXT,
         level INTEGER DEFAULT 1,
         xp INTEGER DEFAULT 0,
@@ -48,16 +50,16 @@ export async function GET() {
         resume_score INTEGER DEFAULT 0,
         resume_details JSONB
       );
-    `);
+    `;
 
     // 3. Seed problems if empty
-    const existingProblems = await sql(`SELECT COUNT(*) FROM problems;`);
+    const existingProblems = await sql`SELECT COUNT(*) FROM problems;`;
     const count = parseInt(existingProblems[0].count, 10);
     
     let seededCount = 0;
     if (count === 0) {
       for (const p of problems) {
-        await sql(
+        await sql.query(
           `INSERT INTO problems (
             id, title, title_slug, difficulty, acceptance_rate, tags, companies,
             description, constraints, examples, code_templates, test_cases,

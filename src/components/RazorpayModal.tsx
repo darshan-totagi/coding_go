@@ -31,7 +31,7 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({ isOpen, onClose, p
     setCouponSuccess("");
     const cleaned = coupon.trim().toUpperCase();
     if (cleaned === "CODEPLACE50" || cleaned === "DISCOUNT50") {
-      setDiscount(250);
+      setDiscount(Math.round(basePrice * 0.5));
       setCouponSuccess("50% discount coupon applied successfully!");
     } else if (cleaned === "FREECODER") {
       setDiscount(basePrice + gst);
@@ -170,7 +170,7 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({ isOpen, onClose, p
               ✓
             </div>
             <h3 className="text-xl font-bold text-white">Payment Successful</h3>
-            <p className="text-sm text-gray-400">Congratulations! Your 1-Year Premium Access has been activated.</p>
+            <p className="text-sm text-gray-400">Congratulations! Your {planName} has been activated.</p>
           </div>
         )}
       </div>

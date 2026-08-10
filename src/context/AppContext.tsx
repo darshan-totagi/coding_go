@@ -57,7 +57,8 @@ export interface UserProfile {
 interface AppContextType {
   user: UserProfile | null;
   loading: boolean;
-  login: (email: string, provider?: string) => Promise<boolean>;
+  login: (email: string, password?: string, provider?: string) => Promise<{ success: boolean; error?: string }>;
+  signup: (name: string, email: string, password?: string) => Promise<{ success: boolean; error?: string }>;
   verifyOtp: (otp: string) => Promise<boolean>;
   logout: () => void;
   solveProblem: (problemId: string, difficulty: "Easy" | "Medium" | "Hard") => void;
@@ -183,31 +184,83 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setUser(finalUser);
     if (finalUser) {
       localStorage.setItem("codeplace_user", JSON.stringify(finalUser));
+      // Sync update to Neon database in the background (async/non-blocking)
+      fetch("/api/auth/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(finalUser),
+      }).catch((err) => {
+        console.error("Background profile sync failed:", err);
+      });
     } else {
       localStorage.removeItem("codeplace_user");
     }
   };
 
-  const login = async (email: string, provider = "Email") => {
+  const login = async (email: string, password?: string, provider = "Email"): Promise<{ success: boolean; error?: string }> => {
     setLoading(true);
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    const newUser: UserProfile = {
-      ...defaultUser,
-      email: email || "user@codeplace.ai",
-      name: email ? email.split("@")[0].toUpperCase() : "Coder Candidate",
-      avatar: provider === "Google" ? "🌐" : provider === "GitHub" ? "🐙" : provider === "LinkedIn" ? "💼" : "👤",
-    };
-    saveUser(newUser);
-    setLoading(false);
-    return true;
+    try {
+      let res;
+      if (provider !== "Email") {
+        res = await fetch("/api/auth/social-login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, name: email.split("@")[0].toUpperCase(), provider }),
+        });
+      } else {
+        res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+      }
+
+      const data = await res.json();
+      if (!res.ok) {
+        return { success: false, error: data.error || "Authentication failed." };
+      }
+
+      setUser(data.user);
+      localStorage.setItem("codeplace_user", JSON.stringify(data.user));
+      return { success: true };
+    } catch (err: any) {
+      console.error("Login call failed:", err);
+      return { success: false, error: "Unable to reach server. Please try again." };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signup = async (name: string, email: string, password?: string): Promise<{ success: boolean; error?: string }> => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        return { success: false, error: data.error || "Registration failed." };
+      }
+
+      setUser(data.user);
+      localStorage.setItem("codeplace_user", JSON.stringify(data.user));
+      return { success: true };
+    } catch (err: any) {
+      console.error("Signup call failed:", err);
+      return { success: false, error: "Unable to reach server. Please try again." };
+    } finally {
+      setLoading(false);
+    }
   };
 
   const verifyOtp = async (otp: string) => {
     setLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 800));
+    await new Promise((resolve) => setTimeout(resolve, 100));
     setLoading(false);
-    return otp === "123456"; // demo otp
+    return otp === "123456";
   };
 
   const logout = () => {
@@ -371,6 +424,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         user,
         loading,
         login,
+        signup,
         verifyOtp,
         logout,
         solveProblem,

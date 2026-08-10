@@ -23,7 +23,7 @@ import {
 export default function PricingPage() {
   const { user } = useApp();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState({ name: "", price: 299 });
+  const [selectedPlan, setSelectedPlan] = useState({ name: "", price: 499 });
 
   const plans = [
     {
@@ -45,10 +45,10 @@ export default function PricingPage() {
     {
       name: "Premium",
       period: "/year",
-      priceText: "₹299",
+      priceText: "₹499",
       subText: "Most popular choice for active prep",
-      priceDetails: "Billed annually at ₹299",
-      priceVal: 299,
+      priceDetails: "Billed annually at ₹499",
+      priceVal: 499,
       popular: true,
       buttonStyle: "bg-gradient-to-r from-brand-purple-600 to-brand-cyan-500 hover:from-brand-purple-700 hover:to-brand-cyan-600 text-white shadow-glass-glow",
       features: [
@@ -190,7 +190,7 @@ export default function PricingPage() {
                     <td className="py-3.5 px-4 font-semibold text-white flex items-center gap-2">
                       Premium <span className="text-[10px] bg-brand-purple-500/20 text-brand-purple-300 px-2 py-0.5 rounded-full uppercase font-bold border border-brand-purple-500/30">Popular</span>
                     </td>
-                    <td className="py-3.5 px-4 text-right font-bold text-brand-cyan-400">₹299/year</td>
+                    <td className="py-3.5 px-4 text-right font-bold text-brand-cyan-400">₹499/year</td>
                   </tr>
                   <tr className="hover:bg-white/5 transition">
                     <td className="py-3.5 px-4 font-semibold text-white">Lifetime</td>
