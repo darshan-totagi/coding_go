@@ -26,7 +26,6 @@ export async function GET() {
     `;
 
     // 2. Create users table
-    await sql`DROP TABLE IF EXISTS users CASCADE;`;
     await sql`
       CREATE TABLE IF NOT EXISTS users (
         id TEXT PRIMARY KEY,
@@ -39,6 +38,7 @@ export async function GET() {
         coins INTEGER DEFAULT 0,
         streak INTEGER DEFAULT 0,
         is_premium BOOLEAN DEFAULT FALSE,
+        role TEXT DEFAULT 'student',
         rating INTEGER DEFAULT 1200,
         leaderboard_rank INTEGER DEFAULT 0,
         solved_problems TEXT[] DEFAULT '{}',

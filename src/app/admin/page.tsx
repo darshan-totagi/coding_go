@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useApp } from "@/context/AppContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 import {
   ShieldCheck,
   TrendingUp,
@@ -17,8 +18,16 @@ import {
 } from "lucide-react";
 
 export default function AdminPanelPage() {
-  const { user } = useApp();
-  const [adminTab, setAdminTab] = useState<"dashboard" | "users" | "add-problem">("dashboard");
+  const { user, problemsList, refreshProblems } = useApp();
+  const router = useRouter();
+  const [adminTab, setAdminTab] = useState<"dashboard" | "users" | "problems" | "add-problem">("dashboard");
+
+  // Security check: Redirect to profile if not logged in or not admin
+  useEffect(() => {
+    if (user && user.role !== "admin") {
+      router.push("/profile");
+    }
+  }, [user, router]);
 
   // New problem form
   const [newTitle, setNewTitle] = useState("");
@@ -33,36 +42,88 @@ export default function AdminPanelPage() {
     { id: "INV-1090", user: "Jessica Lee", date: "2026-07-14", amount: "₹499", status: "Successful" }
   ];
 
-  const [platformUsers, setPlatformUsers] = useState([
-    { id: 1, name: "Alex Coder", email: "alex@codeplace.ai", role: "Student", premium: "Free" },
-    { id: 2, name: "Priya Sharma", email: "priya@codeplace.ai", role: "Student", premium: "Premium" },
-    { id: 3, name: "HR Lead Google", email: "google-recruit@google.com", role: "Recruiter", premium: "Free" }
-  ]);
+  const [platformUsers, setPlatformUsers] = useState<any[]>([]);
 
-  if (!user) return null;
+  const fetchUsers = async () => {
+    try {
+      const res = await fetch("/api/users", {
+        headers: { "x-user-id": user?.id || "" }
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setPlatformUsers(data.users);
+      }
+    } catch (err) {
+      console.error("Failed to load users:", err);
+    }
+  };
 
-  const handleCreateProblem = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (user && user.role === "admin" && adminTab === "users") {
+      fetchUsers();
+    }
+  }, [adminTab, user]);
+
+  if (!user || user.role !== "admin") return null;
+
+  const handleCreateProblem = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormSuccess("");
     if (!newTitle || !newDesc) {
       alert("Please fill in the problem title and description.");
       return;
     }
-    // Simulate database write
-    setFormSuccess(`Problem "${newTitle}" has been added to the library database successfully!`);
-    setNewTitle("");
-    setNewDesc("");
-    setNewTags("");
+    
+    try {
+      const res = await fetch("/api/problems", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-user-id": user.id
+        },
+        body: JSON.stringify({
+          title: newTitle,
+          difficulty: newDiff,
+          tags: newTags,
+          description: newDesc
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setFormSuccess(`Problem "${newTitle}" has been added to the library database successfully!`);
+        setNewTitle("");
+        setNewDesc("");
+        setNewTags("");
+        await refreshProblems();
+      } else {
+        alert(data.error || "Failed to add problem.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("An error occurred while creating problem.");
+    }
   };
 
-  const handleTogglePremium = (userId: number) => {
-    const updated = platformUsers.map((u) => {
-      if (u.id === userId) {
-        return { ...u, premium: u.premium === "Premium" ? "Free" : "Premium" };
+  const handleTogglePremium = async (userId: string, currentPremium: string) => {
+    const nextPremium = currentPremium === "Premium" ? false : true;
+    try {
+      const res = await fetch("/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-user-id": user.id
+        },
+        body: JSON.stringify({
+          targetUserId: userId,
+          isPremium: nextPremium
+        })
+      });
+      if (res.ok) {
+        await fetchUsers();
       }
-      return u;
-    });
-    setPlatformUsers(updated);
+    } catch (err) {
+      console.error("Failed to toggle premium:", err);
+    }
   };
 
   return (
@@ -100,6 +161,14 @@ export default function AdminPanelPage() {
                 }`}
               >
                 Users
+              </button>
+              <button
+                onClick={() => setAdminTab("problems")}
+                className={`px-3 py-1.5 rounded-md transition font-semibold ${
+                  adminTab === "problems" ? "bg-brand-purple-600 text-white" : "text-gray-400 hover:text-white"
+                }`}
+              >
+                Manage Problems
               </button>
               <button
                 onClick={() => setAdminTab("add-problem")}
@@ -218,7 +287,7 @@ export default function AdminPanelPage() {
                           </td>
                           <td className="px-6 py-4 text-right">
                             <button
-                              onClick={() => handleTogglePremium(item.id)}
+                              onClick={() => handleTogglePremium(item.id, item.premium)}
                               className="px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded text-xs font-semibold text-white transition ml-auto block"
                             >
                               Toggle Access
@@ -226,6 +295,93 @@ export default function AdminPanelPage() {
                           </td>
                         </tr>
                       ))}
+                    </tbody>
+                  </table>
+                </div>
+              </motion.div>
+            )}
+
+            {/* PROBLEMS MANAGEMENT */}
+            {adminTab === "problems" && (
+              <motion.div
+                key="problems"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                className="glass-panel p-6 rounded-2xl border border-white/10 space-y-4"
+              >
+                <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-brand-purple-400" /> Platform Coding Questions
+                </h3>
+
+                <div className="overflow-x-auto rounded-xl border border-white/5 bg-black/25">
+                  <table className="w-full text-xs text-left text-gray-400">
+                    <thead className="bg-white/5 uppercase font-bold text-gray-400 border-b border-white/10">
+                      <tr>
+                        <th className="px-6 py-4">ID / Slug</th>
+                        <th className="px-6 py-4">Title</th>
+                        <th className="px-6 py-4">Difficulty</th>
+                        <th className="px-6 py-4">Tags</th>
+                        <th className="px-6 py-4 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {problemsList && problemsList.map((prob) => (
+                        <tr key={prob.id} className="hover:bg-white/[0.02] transition">
+                          <td className="px-6 py-4 font-mono font-semibold text-white">{prob.id}</td>
+                          <td className="px-6 py-4 text-white font-medium">{prob.title}</td>
+                          <td className="px-6 py-4">
+                            <span
+                              className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                                prob.difficulty === "Easy"
+                                  ? "bg-emerald-500/10 text-emerald-400"
+                                  : prob.difficulty === "Medium"
+                                  ? "bg-amber-500/10 text-amber-400"
+                                  : "bg-red-500/10 text-red-400"
+                              }`}
+                            >
+                              {prob.difficulty}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 max-w-[200px] truncate">
+                            {prob.tags.join(", ")}
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <button
+                              onClick={async () => {
+                                if (confirm(`Are you sure you want to delete problem "${prob.title}"?`)) {
+                                  try {
+                                    const res = await fetch(`/api/problems?id=${prob.id}`, {
+                                      method: "DELETE",
+                                      headers: { "x-user-id": user.id }
+                                    });
+                                    const data = await res.json();
+                                    if (res.ok && data.success) {
+                                      alert("Problem deleted successfully.");
+                                      await refreshProblems();
+                                    } else {
+                                      alert(data.error || "Failed to delete problem.");
+                                    }
+                                  } catch (err) {
+                                    console.error(err);
+                                    alert("An error occurred while deleting.");
+                                  }
+                                }
+                              }}
+                              className="p-1.5 bg-red-950/20 border border-red-500/20 hover:border-red-500/50 rounded text-red-400 transition ml-auto flex items-center justify-center gap-1 text-[11px]"
+                            >
+                              <Trash className="w-3.5 h-3.5" /> Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                      {(!problemsList || problemsList.length === 0) && (
+                        <tr>
+                          <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                            No problems found.
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>

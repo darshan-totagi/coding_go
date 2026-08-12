@@ -12,8 +12,27 @@ interface RazorpayModalProps {
   planName?: string;
 }
 
+const loadRazorpayScript = (): Promise<boolean> => {
+  return new Promise((resolve) => {
+    if (typeof window === "undefined") {
+      resolve(false);
+      return;
+    }
+    if ((window as any).Razorpay) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 export const RazorpayModal: React.FC<RazorpayModalProps> = ({ isOpen, onClose, price = 299, planName = "Codeplace Premium (1 Year)" }) => {
-  const { purchasePremium } = useApp();
+  const { user, purchasePremium } = useApp();
   const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
   const [couponError, setCouponError] = useState("");
@@ -43,14 +62,114 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({ isOpen, onClose, p
 
   const handlePayment = async () => {
     setIsProcessing(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsProcessing(false);
-    setIsDone(true);
-    purchasePremium();
-    setTimeout(() => {
-      onClose();
-      setIsDone(false);
-    }, 2000);
+
+    if (finalPrice <= 0) {
+      // 100% discount, bypass checkout
+      purchasePremium();
+      setIsProcessing(false);
+      setIsDone(true);
+      setTimeout(() => {
+        onClose();
+        setIsDone(false);
+      }, 2000);
+      return;
+    }
+
+    try {
+      const scriptLoaded = await loadRazorpayScript();
+      if (!scriptLoaded) {
+        alert("Failed to load Razorpay SDK. Please check your internet connection.");
+        setIsProcessing(false);
+        return;
+      }
+
+      const res = await fetch("/api/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: finalPrice * 100, // paise
+          currency: "INR",
+          receipt: `rcpt_${Date.now()}_${Math.floor(Math.random() * 1000)}`
+        })
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        alert(`Failed to create order: ${errorData.error || "Please try again later."}`);
+        setIsProcessing(false);
+        return;
+      }
+
+      const orderData = await res.json();
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_TO9EeHYXIBatt0",
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "Codeplace",
+        description: planName,
+        order_id: orderData.order_id,
+        handler: async function (response: any) {
+          try {
+            setIsProcessing(true);
+            const verifyRes = await fetch("/api/verify-payment", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                userId: user?.id
+              })
+            });
+
+            const verifyData = await verifyRes.json();
+            if (verifyRes.ok && verifyData.success) {
+              purchasePremium();
+              setIsDone(true);
+              setTimeout(() => {
+                onClose();
+                setIsDone(false);
+              }, 2000);
+            } else {
+              alert(`Payment verification failed: ${verifyData.error || "Invalid Signature"}`);
+            }
+          } catch (verifyErr: any) {
+            console.error("Verification error:", verifyErr);
+            alert("An error occurred during verification. Please contact support.");
+          } finally {
+            setIsProcessing(false);
+          }
+        },
+        prefill: {
+          name: user?.name || "Alex Coder",
+          email: user?.email || "alex@codeplace.ai",
+          contact: "9999999999"
+        },
+        notes: {
+          plan: planName
+        },
+        theme: {
+          color: "#8b5cf6"
+        },
+        modal: {
+          ondismiss: function () {
+            setIsProcessing(false);
+          }
+        }
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.on("payment.failed", function (response: any) {
+        alert(`Payment failed: ${response.error.description || "Unknown error"}`);
+        setIsProcessing(false);
+      });
+      rzp.open();
+    } catch (err: any) {
+      console.error("Payment setup error:", err);
+      alert("An unexpected error occurred. Please try again.");
+      setIsProcessing(false);
+    }
   };
 
   if (!isOpen) return null;

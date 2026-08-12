@@ -5,13 +5,14 @@ import { useApp } from "@/context/AppContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { roadmaps, Roadmap, RoadmapStep } from "@/data/roadmaps";
-import { problems } from "@/data/problems";
+import { problems as staticProblems } from "@/data/problems";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Map, ArrowRight, CheckCircle2, Lock, Unlock, PlayCircle } from "lucide-react";
 
 export default function RoadmapsPage() {
-  const { user } = useApp();
+  const { user, problemsList } = useApp();
+  const problems = problemsList && problemsList.length > 0 ? problemsList : staticProblems;
   const [activeCategory, setActiveCategory] = useState<"General" | "Company">("General");
   const [selectedRoadmap, setSelectedRoadmap] = useState<Roadmap | null>(null);
 
