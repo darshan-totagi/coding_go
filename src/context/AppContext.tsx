@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import confetti from "canvas-confetti";
+import { Problem, problems as staticProblems } from "@/data/problems";
 
 export interface Badge {
   id: string;
@@ -42,6 +43,7 @@ export interface UserProfile {
   coins: number;
   streak: number;
   isPremium: boolean;
+  role: "student" | "admin";
   rating: number;
   leaderboardRank: number;
   solvedProblems: string[]; // Problem IDs solved
@@ -71,6 +73,8 @@ interface AppContextType {
   triggerConfetti: () => void;
   newlyUnlockedBadge: Badge | null;
   clearNewlyUnlockedBadge: () => void;
+  problemsList: Problem[];
+  refreshProblems: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -90,40 +94,31 @@ const initialHeatmap = () => {
   return map;
 };
 
-const defaultUser: UserProfile = {
-  id: "user-123",
-  name: "Alex Coder",
-  email: "alex@codeplace.ai",
-  avatar: "⚡",
-  level: 4,
-  xp: 380,
-  coins: 150,
-  streak: 12,
-  isPremium: false,
-  rating: 1580,
-  leaderboardRank: 1284,
-  solvedProblems: ["1", "2"], // pre-solved Two Sum and Valid Parentheses
-  weakTopics: ["Graphs", "DP"],
-  badges: [
-    { id: "b1", name: "First Blood", icon: "🩸", desc: "Solved first coding question", date: "2026-07-10" },
-    { id: "b2", name: "Stacker", icon: "🥞", desc: "Solved 1 Stack problem", date: "2026-07-12" }
-  ],
-  heatmap: initialHeatmap(),
-  bookmarks: ["4"],
-  notes: {
-    "1": "O(N) solution using a Hash Map is much faster than the O(N^2) brute force."
-  },
-  resumeScore: 68,
-  resumeDetails: null
-};
+
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(false);
   const [newlyUnlockedBadge, setNewlyUnlockedBadge] = useState<Badge | null>(null);
+  const [problemsList, setProblemsList] = useState<Problem[]>([]);
 
   const clearNewlyUnlockedBadge = () => {
     setNewlyUnlockedBadge(null);
+  };
+
+  const refreshProblems = async () => {
+    try {
+      const res = await fetch("/api/problems");
+      const data = await res.json();
+      if (data.success && data.problems) {
+        setProblemsList(data.problems);
+      } else {
+        setProblemsList(staticProblems);
+      }
+    } catch (err) {
+      console.error("Failed to fetch problems from database, using static fallback:", err);
+      setProblemsList(staticProblems);
+    }
   };
 
   useEffect(() => {
@@ -132,8 +127,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (saved) {
       setUser(JSON.parse(saved));
     } else {
-      setUser(defaultUser);
+      setUser(null);
     }
+    refreshProblems();
   }, []);
 
   const checkAndAwardBadges = (updatedUser: UserProfile): UserProfile => {
@@ -436,7 +432,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         addCoins,
         triggerConfetti,
         newlyUnlockedBadge,
-        clearNewlyUnlockedBadge
+        clearNewlyUnlockedBadge,
+        problemsList,
+        refreshProblems
       }}
     >
       {children}

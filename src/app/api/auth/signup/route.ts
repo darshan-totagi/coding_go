@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     await sql`
       INSERT INTO users (
         id, name, email, password_hash, avatar, level, xp, coins, streak,
-        is_premium, rating, leaderboard_rank, solved_problems, weak_topics,
+        is_premium, role, rating, leaderboard_rank, solved_problems, weak_topics,
         badges, heatmap, bookmarks, notes, resume_score, resume_details
       ) VALUES (
         ${id},
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
         ${email.toLowerCase().trim()},
         ${passwordHash},
         ${avatar},
-        1, 0, 50, 0, false, 1200, 0,
+        1, 0, 50, 0, false, 'student', 1200, 0,
         ${[]}, ${[]}, ${JSON.stringify([])}, ${JSON.stringify({})},
         ${[]}, ${JSON.stringify({})}, 0, null
       )
@@ -82,6 +82,7 @@ export async function POST(request: Request) {
       coins: dbUser.coins ?? 50,
       streak: dbUser.streak ?? 0,
       isPremium: dbUser.is_premium ?? false,
+      role: dbUser.role ?? "student",
       rating: dbUser.rating ?? 1200,
       leaderboardRank: dbUser.leaderboard_rank ?? 0,
       solvedProblems: dbUser.solved_problems || [],

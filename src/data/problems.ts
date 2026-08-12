@@ -2579,12 +2579,12 @@ function generateProblemFromTitle(name: string, tag: string) {
   
   let description = "";
   let constraints = ["1 <= input.length <= 10^5"];
-  let examples = [{ input: "input", output: "output" }];
+  let examples: Problem['examples'] = [{ input: "input", output: "output" }];
   let codeTemplates: { [key: string]: string } = {
     python: "def solve(input):\n    # Write your code here\n    return input",
     javascript: "function solve(input) {\n    // Write your code here\n    return input;\n}"
   };
-  let testCases = [{ input: "input", output: "output" }];
+  let testCases: Problem['testCases'] = [{ input: "input", output: "output" }];
   let hints = [`Use properties of ${tag} to design an efficient solution.`];
   let editorial = `### ${tag} Solution\\nApply standard ${tag} patterns to solve the challenge optimally.`;
 

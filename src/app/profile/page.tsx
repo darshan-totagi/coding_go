@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useApp } from "@/context/AppContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { problems } from "@/data/problems";
+import { problems as staticProblems } from "@/data/problems";
 import Link from "next/link";
 import {
   User,
@@ -22,7 +22,8 @@ import {
 } from "lucide-react";
 
 export default function ProfilePage() {
-  const { user } = useApp();
+  const { user, problemsList } = useApp();
+  const problems = problemsList && problemsList.length > 0 ? problemsList : staticProblems;
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

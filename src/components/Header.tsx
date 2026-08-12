@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useApp } from "@/context/AppContext";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, Flame, Trophy, Sparkles, User, LogOut, X, Sun, Zap, Megaphone, ChevronDown } from "lucide-react";
+import { Bell, Flame, Trophy, Sparkles, User, LogOut, X, Sun, Zap, Megaphone, ChevronDown, ShieldCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RazorpayModal } from "./RazorpayModal";
 
@@ -126,24 +126,6 @@ export const Header: React.FC = () => {
           >
             Practice
           </Link>
-
-          <Link
-            href="/contests"
-            className={`text-[13px] font-bold transition-all duration-200 select-none ${
-              pathname.startsWith("/contests") ? "text-orange-400" : "text-zinc-400 hover:text-white"
-            }`}
-          >
-            Compete
-          </Link>
-
-          <Link
-            href="/problems"
-            className={`text-[13px] font-bold transition-all duration-200 select-none ${
-              pathname === "/compiler" ? "text-orange-400" : "text-zinc-400 hover:text-white"
-            }`}
-          >
-            Compiler
-          </Link>
         </nav>
 
         {/* Right side: Stats & Profile */}
@@ -257,7 +239,7 @@ export const Header: React.FC = () => {
                           </div>
                         </div>
                       </div>
-                      <Link
+                       <Link
                         href="/profile"
                         onClick={() => setShowProfileMenu(false)}
                         className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition"
@@ -265,6 +247,16 @@ export const Header: React.FC = () => {
                         <User className="w-4 h-4 text-orange-400" />
                         My Profile
                       </Link>
+                      {user.role === "admin" && (
+                        <Link
+                          href="/admin"
+                          onClick={() => setShowProfileMenu(false)}
+                          className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition"
+                        >
+                          <ShieldCheck className="w-4 h-4 text-brand-purple-400" />
+                          Admin Panel
+                        </Link>
+                      )}
                       <button
                         onClick={() => {
                           setShowProfileMenu(false);

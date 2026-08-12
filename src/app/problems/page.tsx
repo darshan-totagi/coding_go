@@ -6,7 +6,8 @@ import { useApp } from "@/context/AppContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SubNavbar } from "@/components/SubNavbar";
-import { problems, Problem } from "@/data/problems";
+import { RazorpayModal } from "@/components/RazorpayModal";
+import { problems as staticProblems, Problem } from "@/data/problems";
 import Editor from "@monaco-editor/react";
 import {
   Search,
@@ -25,7 +26,8 @@ import {
   List,
   Terminal,
   Activity,
-  Layers
+  Layers,
+  Crown
 } from "lucide-react";
 
 const renderInlineFormatting = (text: string) => {
@@ -110,7 +112,8 @@ export default function ProblemsPage() {
 }
 
 function ProblemsContent() {
-  const { user, solveProblem, toggleBookmark, saveNote } = useApp();
+  const { user, solveProblem, toggleBookmark, saveNote, problemsList } = useApp();
+  const problems = problemsList && problemsList.length > 0 ? problemsList : staticProblems;
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -120,7 +123,6 @@ function ProblemsContent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("All");
   const [selectedTag, setSelectedTag] = useState<string>("All");
-  const [selectedCompany, setSelectedCompany] = useState<string>("All");
 
   // Selected Problem Details
   const [currentProblem, setCurrentProblem] = useState<Problem | null>(null);
@@ -143,9 +145,16 @@ function ProblemsContent() {
     { role: "assistant", content: "Hi! I am your AI Mentor. Write some code or select an option below and I will help you review it." }
   ]);
 
+  const [isPayModalOpen, setIsPayModalOpen] = useState(false);
+
   // Load selected problem
   useEffect(() => {
     if (problemId) {
+      if (user && !user.isPremium) {
+        setIsPayModalOpen(true);
+        router.push("/problems");
+        return;
+      }
       const found = problems.find((p) => p.id === problemId);
       if (found) {
         setCurrentProblem(found);
@@ -156,7 +165,7 @@ function ProblemsContent() {
     } else {
       setCurrentProblem(null);
     }
-  }, [problemId, selectedLanguage]);
+  }, [problemId, selectedLanguage, user, router]);
 
   // Handle run code simulation
   const handleRunCode = async () => {
@@ -239,15 +248,13 @@ No compile syntax errors or logical bugs found! The code structure fully passes 
 
   // Get problem lists tags/companies options
   const allTags = ["All", ...Array.from(new Set(problems.flatMap((p) => p.tags)))];
-  const allCompanies = ["All", ...Array.from(new Set(problems.flatMap((p) => p.companies)))];
 
   // Filter problems list
   const filteredProblems = problems.filter((p) => {
     const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesDiff = selectedDifficulty === "All" || p.difficulty === selectedDifficulty;
     const matchesTag = selectedTag === "All" || p.tags.includes(selectedTag);
-    const matchesCompany = selectedCompany === "All" || p.companies.includes(selectedCompany);
-    return matchesSearch && matchesDiff && matchesTag && matchesCompany;
+    return matchesSearch && matchesDiff && matchesTag;
   });
 
   return (
@@ -603,7 +610,7 @@ No compile syntax errors or logical bugs found! The code structure fully passes 
             </div>
 
             {/* Filters Bar */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
               {/* Search */}
               <div className="relative">
                 <Search className="absolute left-3 top-3 w-4 h-4 text-gray-500" />
@@ -646,21 +653,7 @@ No compile syntax errors or logical bugs found! The code structure fully passes 
                 </select>
               </div>
 
-              {/* Company */}
-              <div className="flex flex-col gap-1">
-                <select
-                  value={selectedCompany}
-                  onChange={(e) => setSelectedCompany(e.target.value)}
-                  className="w-full bg-[#030303] border border-white/10 rounded-lg text-xs px-3 py-2.5 text-white focus:outline-none"
-                >
-                  <option value="All">Company: All</option>
-                  {allCompanies.filter((c) => c !== "All").map((comp) => (
-                    <option key={comp} value={comp}>
-                      {comp}
-                    </option>
-                  ))}
-                </select>
-              </div>
+
             </div>
 
             {/* Problem Table */}
@@ -690,8 +683,11 @@ No compile syntax errors or logical bugs found! The code structure fully passes 
                             )}
                           </td>
                           <td className="px-6 py-4">
-                            <span className="font-semibold text-white block">{problem.title}</span>
-                            <span className="text-[10px] text-gray-500">Asked: {problem.companies.slice(0, 3).join(", ")}</span>
+                            <div className="flex items-center gap-2">
+                              <Crown className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500/10 shrink-0 animate-pulse" />
+                              <span className="font-semibold text-white block">{problem.title}</span>
+                            </div>
+                            <span className="text-[10px] text-gray-500 block mt-0.5">Asked: {problem.companies.slice(0, 3).join(", ")}</span>
                           </td>
                           <td className="px-6 py-4">
                             <span
@@ -718,7 +714,13 @@ No compile syntax errors or logical bugs found! The code structure fully passes 
                           </td>
                           <td className="px-6 py-4 text-right">
                             <button
-                              onClick={() => router.push(`/problems?id=${problem.id}`)}
+                              onClick={() => {
+                                if (user && !user.isPremium) {
+                                  setIsPayModalOpen(true);
+                                } else {
+                                  router.push(`/problems?id=${problem.id}`);
+                                }
+                              }}
                               className="px-3.5 py-1.5 bg-brand-purple-600 hover:bg-brand-purple-700 text-white rounded-lg text-xs font-bold transition"
                             >
                               Solve
@@ -746,6 +748,8 @@ No compile syntax errors or logical bugs found! The code structure fully passes 
           </div>
         )}
       </div>
+
+      <RazorpayModal isOpen={isPayModalOpen} onClose={() => setIsPayModalOpen(false)} />
     </div>
   );
 }

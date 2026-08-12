@@ -48,6 +48,7 @@ export async function POST(request: Request) {
       coins: dbUser.coins ?? 50,
       streak: dbUser.streak ?? 0,
       isPremium: dbUser.is_premium ?? false,
+      role: dbUser.role ?? "student",
       rating: dbUser.rating ?? 1200,
       leaderboardRank: dbUser.leaderboard_rank ?? 0,
       solvedProblems: dbUser.solved_problems || [],
