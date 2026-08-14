@@ -92,6 +92,7 @@ export const Footer: React.FC = () => {
           <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4">Platform</h4>
           <ul className="space-y-2.5 text-xs sm:text-sm">
             <li><Link href="/problems" className="hover:text-brand-cyan-400 transition">Problem Sets</Link></li>
+            <li><Link href="/companies" className="hover:text-brand-cyan-400 transition">Company Questions</Link></li>
             <li><Link href="/roadmaps" className="hover:text-brand-cyan-400 transition">Learning Roadmaps</Link></li>
             <li><Link href="/contests" className="hover:text-brand-cyan-400 transition">Live Contests</Link></li>
             <li><Link href="/community" className="hover:text-brand-cyan-400 transition">Community Hub</Link></li>
