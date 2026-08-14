@@ -126,6 +126,18 @@ export const Header: React.FC = () => {
           >
             Practice
           </Link>
+
+          <Link
+            href="/companies"
+            className={`text-[13px] font-bold transition-all duration-200 select-none flex items-center gap-1 ${
+              pathname.startsWith("/companies") ? "text-orange-400" : "text-zinc-400 hover:text-white"
+            }`}
+          >
+            Company Questions
+            <span className="text-[9px] font-extrabold bg-gradient-to-r from-orange-500 to-red-500 text-white px-1.5 py-0.5 rounded-full uppercase tracking-wider scale-90 origin-left animate-pulse">
+              New
+            </span>
+          </Link>
         </nav>
 
         {/* Right side: Stats & Profile */}

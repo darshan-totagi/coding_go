@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useApp } from "@/context/AppContext";
-import { Code2 } from "lucide-react";
+import { Code2, Building2 } from "lucide-react";
 
 export const SubNavbar: React.FC = () => {
   const pathname = usePathname();
@@ -15,6 +15,7 @@ export const SubNavbar: React.FC = () => {
   // Define navigation tabs
   const tabs = [
     { name: "Problem Library", href: "/problems", icon: Code2 },
+    { name: "Company Questions", href: "/companies", icon: Building2 },
   ];
 
   return (
