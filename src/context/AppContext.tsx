@@ -75,6 +75,8 @@ interface AppContextType {
   clearNewlyUnlockedBadge: () => void;
   problemsList: Problem[];
   refreshProblems: () => Promise<void>;
+  theme: "dark" | "light";
+  toggleTheme: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -101,6 +103,32 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [loading, setLoading] = useState(false);
   const [newlyUnlockedBadge, setNewlyUnlockedBadge] = useState<Badge | null>(null);
   const [problemsList, setProblemsList] = useState<Problem[]>([]);
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") as "dark" | "light" | null;
+    if (savedTheme) {
+      setTheme(savedTheme);
+      if (savedTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    } else {
+      document.documentElement.classList.add("dark");
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    localStorage.setItem("theme", nextTheme);
+    if (nextTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  };
 
   const clearNewlyUnlockedBadge = () => {
     setNewlyUnlockedBadge(null);
@@ -434,7 +462,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         newlyUnlockedBadge,
         clearNewlyUnlockedBadge,
         problemsList,
-        refreshProblems
+        refreshProblems,
+        theme,
+        toggleTheme
       }}
     >
       {children}
