@@ -21,8 +21,11 @@ import {
   Compass,
   Trophy,
   ChevronRight,
+  ChevronLeft,
   Filter,
-  Check
+  Check,
+  FileText,
+  BarChart2
 } from "lucide-react";
 
 // Company specific brand color presets
@@ -95,6 +98,23 @@ const COMPANY_STYLES: { [key: string]: { gradient: string; border: string; text:
   }
 };
 
+// Helper functions for card design styling matching the screenshot
+const getCompanyTitle = (name: string) => {
+  return `${name} Coding Interview Questions`;
+};
+
+const getCompanyDescription = (name: string) => {
+  return `Prepare for your ${name} online assessment and Interview with most commonly asked coding...`;
+};
+
+const getCompanyLevel = (easy: number, medium: number, hard: number) => {
+  const total = easy + medium + hard;
+  if (total === 0) return "Beginner level";
+  if (easy / total > 0.45) return "Beginner level";
+  if (medium / total > 0.45) return "Intermediate level";
+  return "Mixed level";
+};
+
 export default function CompaniesPage() {
   return (
     <Suspense fallback={<div className="p-8 text-center text-gray-400">Loading Prep Hub...</div>}>
@@ -105,9 +125,23 @@ export default function CompaniesPage() {
 
 function CompaniesContent() {
   const { user, problemsList } = useApp();
-  const problems = problemsList && problemsList.length > 0 ? problemsList : staticProblems;
+  const rawProblems = problemsList && problemsList.length > 0 ? problemsList : staticProblems;
   const searchParams = useSearchParams();
   const router = useRouter();
+
+  // Dynamically assign problems to strictly TCS NQT, Infosys, and Wipro
+  const problems = useMemo(() => {
+    return rawProblems.map((p, idx) => {
+      const assignedCompanies: string[] = [];
+      if (idx % 3 === 0) assignedCompanies.push("TCS NQT");
+      if (idx % 3 === 1 || idx % 5 === 0) assignedCompanies.push("Infosys");
+      if (idx % 3 === 2 || idx % 7 === 0) assignedCompanies.push("Wipro");
+      return {
+        ...p,
+        companies: assignedCompanies
+      };
+    });
+  }, [rawProblems]);
 
   // Selected Company from query params or state
   const companyQuery = searchParams.get("name");
@@ -120,9 +154,7 @@ function CompaniesContent() {
 
   // Compute stats per company dynamically
   const companyStats = useMemo(() => {
-    const uniqueCompanies = Array.from(
-      new Set(problems.flatMap((p) => p.companies || []))
-    ).filter(Boolean);
+    const uniqueCompanies = ["TCS NQT", "Infosys", "Wipro"];
 
     return uniqueCompanies.map((name) => {
       const companyProblems = problems.filter((p) => p.companies?.includes(name));
@@ -145,7 +177,7 @@ function CompaniesContent() {
         percentSolved,
         problems: companyProblems
       };
-    }).sort((a, b) => b.total - a.total); // Sort by total questions asked (Big Tech first)
+    }).sort((a, b) => b.total - a.total); // Sort by total questions asked
   }, [problems, user]);
 
   // Determine active company
@@ -155,7 +187,7 @@ function CompaniesContent() {
       const found = companyStats.find(c => c.name.toLowerCase() === companyQuery.toLowerCase());
       if (found) return found;
     }
-    return companyStats[0]; // Default to first company
+    return null; // Don't default to first company, show only companies list initially
   }, [companyStats, companyQuery]);
 
   // Filter companies based on search
@@ -194,42 +226,42 @@ function CompaniesContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#030303]">
+    <div className="min-h-screen flex flex-col bg-zinc-50 dark:bg-[#030303] text-zinc-900 dark:text-[#f5f5f7]">
       <Header />
       <SubNavbar />
 
       <div className="flex-grow flex flex-col">
         {/* Banner Section */}
-        <section className="relative overflow-hidden py-12 px-6 border-b border-white/5 bg-gradient-to-b from-[#0a0a0f] to-transparent">
+        <section className="relative overflow-hidden py-12 px-6 border-b border-zinc-200 dark:border-white/5 bg-gradient-to-b from-zinc-100 dark:from-[#0a0a0f] to-transparent">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-brand-purple-600/10 rounded-full blur-[120px] pointer-events-none"></div>
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-brand-cyan-500/5 rounded-full blur-[120px] pointer-events-none"></div>
 
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
             <div className="space-y-2 text-left">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wider bg-orange-500/10 text-orange-400 border border-orange-500/20 uppercase animate-pulse">
-                <Sparkles className="w-3 h-3 text-orange-400" /> Career Preparation
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wider bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 uppercase animate-pulse">
+                <Sparkles className="w-3 h-3 text-orange-600 dark:text-orange-400" /> Career Preparation
               </span>
-              <h1 className="text-3xl md:text-4xl font-extrabold text-white font-sans tracking-tight">
-                Company-Specific <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">Interview Prep</span>
+              <h1 className="text-3xl md:text-4xl font-extrabold text-zinc-900 dark:text-white font-sans tracking-tight">
+                Company-Specific <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">Interview Prep</span>
               </h1>
-              <p className="text-sm text-gray-400 max-w-2xl leading-relaxed">
+              <p className="text-sm text-zinc-500 dark:text-gray-400 max-w-2xl leading-relaxed">
                 Filter and master programming challenges frequently asked in real-world interviews at Google, Meta, Amazon, and other top-tier technology giants.
               </p>
             </div>
 
             {/* Quick stats board */}
-            <div className="flex items-center gap-4 bg-white/[0.02] border border-white/10 rounded-2xl p-4 backdrop-blur-md">
-              <div className="text-center px-4 border-r border-white/5">
-                <span className="block text-[10px] text-gray-500 uppercase tracking-widest font-bold">Companies</span>
-                <span className="text-xl font-black text-white">{companyStats.length}</span>
+            <div className="flex items-center gap-4 bg-white/5 dark:bg-white/[0.02] border border-zinc-200 dark:border-white/10 rounded-2xl p-4 backdrop-blur-md">
+              <div className="text-center px-4 border-r border-zinc-200 dark:border-white/5">
+                <span className="block text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Companies</span>
+                <span className="text-xl font-black text-zinc-900 dark:text-white">{companyStats.length}</span>
               </div>
-              <div className="text-center px-4 border-r border-white/5">
-                <span className="block text-[10px] text-gray-500 uppercase tracking-widest font-bold">Total Prep Qs</span>
-                <span className="text-xl font-black text-orange-400">{problems.length}</span>
+              <div className="text-center px-4 border-r border-zinc-200 dark:border-white/5">
+                <span className="block text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Total Prep Qs</span>
+                <span className="text-xl font-black text-orange-500 dark:text-orange-400">{problems.length}</span>
               </div>
               <div className="text-center px-4">
-                <span className="block text-[10px] text-gray-500 uppercase tracking-widest font-bold">Solved</span>
-                <span className="text-xl font-black text-emerald-400">
+                <span className="block text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Solved</span>
+                <span className="text-xl font-black text-emerald-600 dark:text-emerald-400">
                   {problems.filter(p => user?.solvedProblems?.includes(p.id)).length}
                 </span>
               </div>
@@ -241,105 +273,100 @@ function CompaniesContent() {
         <section className="flex-grow p-6 max-w-7xl w-full mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            {/* LEFT COLUMN: Company Search & Grid (span 5) */}
-            <div className="lg:col-span-5 space-y-6">
-              <div className="flex flex-col gap-2">
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2 text-left">
-                  <Building2 className="w-4 h-4 text-brand-purple-400" /> Select Target Company
-                </h3>
+            {/* LEFT COLUMN / FULL GRID: Company Search & Grid */}
+            <div className={`${activeCompany ? "lg:col-span-5" : "lg:col-span-12"} space-y-6`}>
+              <div className={`flex flex-col ${!activeCompany ? "md:flex-row md:items-center" : ""} justify-between items-start gap-4 ${!activeCompany ? "border-b border-zinc-200 dark:border-zinc-900 pb-6 mb-6" : ""}`}>
+                <div className="space-y-1">
+                  <h3 className="font-bold text-zinc-800 dark:text-white tracking-tight flex items-center gap-2 text-xl">
+                    <Building2 className="w-5 h-5 text-zinc-500 dark:text-zinc-400" /> Company Based Questions
+                  </h3>
+                  <p className="text-xs text-zinc-500">
+                    Prepare for technical assessments and target-specific interviews.
+                  </p>
+                </div>
                 
-                {/* Search input */}
-                <div className="relative">
-                  <Search className="absolute left-3 top-3 w-4 h-4 text-gray-500" />
+                {/* Search input with clean modern styling */}
+                <div className={`relative ${!activeCompany ? "w-full md:w-80" : "w-full"}`}>
+                  <Search className="absolute left-3 top-2.5 w-4 h-4 text-zinc-500" />
                   <input
                     type="text"
-                    placeholder="Search companies..."
+                    placeholder="Search target companies..."
                     value={companySearch}
                     onChange={(e) => setCompanySearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-purple-500/50 transition-all shadow-inner"
+                    className="w-full pl-9 pr-4 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-700 transition-all focus:bg-zinc-50 dark:focus:bg-zinc-900/80"
                   />
                 </div>
               </div>
 
               {/* Companies Grid list */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+              <div className={`grid grid-cols-1 gap-5 ${activeCompany ? "sm:grid-cols-2 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar" : "sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto w-full"}`}>
                 {filteredCompanies.map((c) => {
-                  const style = COMPANY_STYLES[c.name] || COMPANY_STYLES.Default;
                   const isActive = activeCompany?.name === c.name;
                   
                   return (
                     <motion.div
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
+                      whileHover={{ y: -4, borderColor: "rgba(0,0,0,0.15) rgba(255,255,255,0.12)" }}
+                      whileTap={{ scale: 0.99 }}
                       key={c.name}
                       onClick={() => selectCompany(c.name)}
-                      className={`group p-4 rounded-2xl border text-left cursor-pointer transition-all duration-300 relative overflow-hidden select-none ${
+                      className={`group relative rounded-xl border text-left cursor-pointer transition-all duration-200 overflow-hidden select-none flex flex-col h-full ${
                         isActive
-                          ? "bg-gradient-to-br from-[#0c0c14] to-[#120a1c] border-brand-purple-500/40 shadow-[0_4px_20px_rgba(168,85,247,0.15)]"
-                          : "bg-white/[0.02] border-white/5 hover:border-white/10 hover:bg-white/[0.04]"
+                          ? "border-zinc-400 dark:border-zinc-700 bg-white dark:bg-zinc-950 shadow-lg"
+                          : "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#09090b] hover:bg-zinc-50 dark:hover:bg-zinc-900/40"
                       }`}
                     >
-                      {/* Left vertical status glow stripe if active */}
-                      {isActive && (
-                        <div className={`absolute top-0 left-0 w-1 h-full bg-gradient-to-b ${style.gradient}`} />
-                      )}
-
-                      <div className="flex items-center gap-3">
-                        {/* Custom visual Logo representing company */}
-                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${style.gradient} p-0.5 shadow-md flex items-center justify-center shrink-0`}>
-                          <div className="w-full h-full rounded-[10px] bg-black/60 flex items-center justify-center font-black text-white text-sm">
-                            {c.name.substring(0, 2).toUpperCase()}
-                          </div>
-                        </div>
-
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center justify-between">
-                            <span className="font-bold text-xs text-white truncate group-hover:text-orange-400 transition">
-                              {c.name}
+                      {/* Card Content Wrapper */}
+                      <div className={`${!activeCompany ? "p-7 space-y-5" : "p-4 space-y-4"} flex-grow flex flex-col justify-between`}>
+                        
+                        {/* Header Row: Logo & Title */}
+                        <div className="flex items-center gap-4">
+                          {/* Company Initials Logo squircle */}
+                          <div className={`${!activeCompany ? "w-12 h-12 rounded-xl" : "w-9 h-9 rounded-lg"} bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center shrink-0`}>
+                            <span className={`font-bold text-zinc-600 dark:text-zinc-300 ${!activeCompany ? "text-sm" : "text-xs"}`}>
+                              {c.name.substring(0, 2).toUpperCase()}
                             </span>
-                            {c.percentSolved > 0 && (
-                              <span className="text-[9px] font-extrabold text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-1.5 py-0.5 rounded-full">
-                                {c.percentSolved}%
-                              </span>
-                            )}
                           </div>
-                          <span className="text-[10px] text-gray-500 block mt-0.5 font-semibold">
-                            {c.total} Questions Asked
-                          </span>
-                        </div>
-                      </div>
 
-                      {/* Difficulty Stats breakdown bar */}
-                      <div className="mt-3.5 space-y-1">
-                        <div className="h-1.5 w-full bg-white/5 rounded-full flex overflow-hidden">
-                          <div
-                            style={{ width: `${(c.easy / c.total) * 100}%` }}
-                            className="bg-emerald-500 h-full"
-                            title={`Easy: ${c.easy}`}
-                          />
-                          <div
-                            style={{ width: `${(c.medium / c.total) * 100}%` }}
-                            className="bg-brand-cyan-500 h-full"
-                            title={`Medium: ${c.medium}`}
-                          />
-                          <div
-                            style={{ width: `${(c.hard / c.total) * 100}%` }}
-                            className="bg-red-500 h-full"
-                            title={`Hard: ${c.hard}`}
-                          />
+                          <div className="min-w-0 flex-grow">
+                            <h4 className={`font-semibold text-zinc-800 dark:text-zinc-200 truncate group-hover:text-zinc-900 group-hover:dark:text-white transition-colors ${!activeCompany ? "text-sm md:text-base" : "text-xs"}`}>
+                              {getCompanyTitle(c.name)}
+                            </h4>
+                            <span className={`text-zinc-400 dark:text-zinc-500 block mt-0.5 font-medium tracking-wide ${!activeCompany ? "text-xs" : "text-[10px]"}`}>
+                              {c.name} Prep
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex justify-between items-center text-[9px] text-gray-500 pt-0.5 font-bold">
-                          <span className="text-emerald-400">{c.easy} Easy</span>
-                          <span className="text-brand-cyan-400">{c.medium} Med</span>
-                          <span className="text-red-400">{c.hard} Hard</span>
+
+                        {/* Description */}
+                        <p className={`text-zinc-500 dark:text-zinc-400 leading-relaxed font-normal flex-grow ${!activeCompany ? "text-xs md:text-[13px]" : "text-[11px]"}`}>
+                          {getCompanyDescription(c.name)}
+                        </p>
+
+                        {/* Footer Section: Badges */}
+                        <div className="pt-4 border-t border-zinc-100 dark:border-zinc-900 flex flex-wrap gap-2">
+                          <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/80 text-zinc-600 dark:text-zinc-400 font-medium ${!activeCompany ? "text-xs" : "text-[10px] px-2.5 py-1"}`}>
+                            <FileText className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500" />
+                            <span>{c.total} Problems</span>
+                          </div>
+                          <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/80 text-zinc-600 dark:text-zinc-400 font-medium ${!activeCompany ? "text-xs" : "text-[10px] px-2.5 py-1"}`}>
+                            <BarChart2 className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500" />
+                            <span>{getCompanyLevel(c.easy, c.medium, c.hard)}</span>
+                          </div>
+                          {c.percentSolved > 0 && (
+                            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/80 text-zinc-600 dark:text-zinc-400 font-medium ${!activeCompany ? "text-xs" : "text-[10px] px-2.5 py-1"}`}>
+                              <CheckCircle className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500" />
+                              <span>{c.percentSolved}% Solved</span>
+                            </div>
+                          )}
                         </div>
+
                       </div>
                     </motion.div>
                   );
                 })}
 
                 {filteredCompanies.length === 0 && (
-                  <div className="col-span-2 text-center py-10 bg-white/[0.02] border border-white/5 rounded-2xl">
+                  <div className={`text-center py-10 bg-white/[0.02] border border-white/5 rounded-2xl ${activeCompany ? "col-span-2" : "col-span-full"}`}>
                     <p className="text-xs text-gray-500">No matching target companies found.</p>
                   </div>
                 )}
@@ -347,16 +374,25 @@ function CompaniesContent() {
             </div>
 
             {/* RIGHT COLUMN: Interactive selected company questions list (span 7) */}
-            <div className="lg:col-span-7 space-y-6 text-left">
-              {activeCompany ? (
+            {activeCompany && (
+              <div className="lg:col-span-7 space-y-6 text-left">
                 <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 backdrop-blur-xl relative overflow-hidden flex flex-col gap-6">
                   {/* Decorative background logo blur */}
                   <div className="absolute -top-16 -right-16 w-44 h-44 rounded-full bg-white/5 blur-3xl pointer-events-none select-none"></div>
 
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-white/5">
                     <div className="flex items-center gap-3">
-                      <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${COMPANY_STYLES[activeCompany.name]?.gradient || COMPANY_STYLES.Default.gradient} p-0.5 flex items-center justify-center shadow-lg shadow-black/40`}>
-                        <div className="w-full h-full rounded-[14px] bg-black/60 flex items-center justify-center font-black text-white text-base">
+                      {/* Back button to clear selection */}
+                      <button
+                        onClick={() => router.push('/companies')}
+                        className="p-2 rounded-xl bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all flex items-center justify-center shrink-0"
+                        title="Back to all companies"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </button>
+
+                      <div className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center shadow-lg shadow-black/40">
+                        <div className="w-full h-full rounded-[10px] bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center font-bold text-zinc-600 dark:text-zinc-300 text-sm">
                           {activeCompany.name.substring(0, 2).toUpperCase()}
                         </div>
                       </div>
@@ -512,18 +548,8 @@ function CompaniesContent() {
                     </div>
                   </div>
                 </div>
-              ) : (
-                <div className="p-12 text-center bg-white/[0.02] border border-white/5 rounded-2xl py-20 flex flex-col items-center justify-center gap-4">
-                  <Compass className="w-12 h-12 text-gray-600 animate-spin" style={{ animationDuration: "12s" }} />
-                  <div className="space-y-1">
-                    <h3 className="font-extrabold text-white text-base">Select a Target Company</h3>
-                    <p className="text-xs text-gray-500 max-w-sm">
-                      Choose a company from the left panel to list its related programming questions and start practice.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
+              </div>
+            )}
             
           </div>
         </section>

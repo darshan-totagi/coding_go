@@ -4,12 +4,12 @@ import React, { useState } from "react";
 import { useApp } from "@/context/AppContext";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, Flame, Trophy, Sparkles, User, LogOut, X, Sun, Zap, Megaphone, ChevronDown, ShieldCheck } from "lucide-react";
+import { Bell, Flame, Trophy, Sparkles, User, LogOut, X, Sun, Moon, Zap, Megaphone, ChevronDown, ShieldCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RazorpayModal } from "./RazorpayModal";
 
 export const Header: React.FC = () => {
-  const { user, logout } = useApp();
+  const { user, logout, theme, toggleTheme } = useApp();
   const pathname = usePathname();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -59,7 +59,7 @@ export const Header: React.FC = () => {
         )}
       </AnimatePresence>
 
-      <header className="w-full bg-[#0a0a0c] border-b border-white/5 py-4 px-6 flex items-center justify-between">
+      <header className="w-full bg-white dark:bg-[#0a0a0c] border-b border-zinc-200 dark:border-white/5 py-4 px-6 flex items-center justify-between">
         {/* Left side: Logo */}
         <div className="flex items-center gap-4">
           <Link href="/" className="flex items-center gap-2.5 select-none group">
@@ -78,7 +78,7 @@ export const Header: React.FC = () => {
                 <path d="M12 2c-3 0-5 2.24-5 5c0 1.25.5 2.13 1.5 2.76c-1.5.58-2.5 1.74-2.5 3.24c0 2.5 3.5 3 8 3s8-.5 8-3c0-1.5-1-2.66-2.5-3.24c1-.63 1.5-1.51 1.5-2.76c0-2.76-2-5-5-5Z" />
               </svg>
             </div>
-            <span className="text-lg font-black tracking-wider text-white uppercase font-sans">
+            <span className="text-lg font-black tracking-wider text-zinc-900 dark:text-white uppercase font-sans">
               CODE<span className="text-orange-400">PLACE</span>
             </span>
           </Link>
@@ -90,7 +90,7 @@ export const Header: React.FC = () => {
             <Link
               href="/roadmaps"
               className={`text-[13px] font-bold transition-all duration-200 select-none flex items-center gap-1 ${
-                pathname.startsWith("/roadmaps") ? "text-orange-400" : "text-zinc-400 hover:text-white"
+                pathname.startsWith("/roadmaps") ? "text-orange-400" : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
               }`}
             >
               Courses
@@ -121,7 +121,7 @@ export const Header: React.FC = () => {
           <Link
             href="/problems"
             className={`text-[13px] font-bold transition-all duration-200 select-none ${
-              pathname === "/problems" ? "text-orange-400" : "text-zinc-400 hover:text-white"
+              pathname === "/problems" ? "text-orange-400" : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
             }`}
           >
             Practice
@@ -130,7 +130,7 @@ export const Header: React.FC = () => {
           <Link
             href="/companies"
             className={`text-[13px] font-bold transition-all duration-200 select-none flex items-center gap-1 ${
-              pathname.startsWith("/companies") ? "text-orange-400" : "text-zinc-400 hover:text-white"
+              pathname.startsWith("/companies") ? "text-orange-400" : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
             }`}
           >
             Company Questions
@@ -142,9 +142,13 @@ export const Header: React.FC = () => {
 
         {/* Right side: Stats & Profile */}
         <div className="flex items-center gap-4">
-          {/* Theme Toggle Sun Icon */}
-          <button className="p-2 rounded-full text-zinc-400 hover:text-white transition">
-            <Sun className="w-5 h-5" />
+          {/* Theme Toggle Sun/Moon Icon */}
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-full text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-all duration-200"
+            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
 
           {/* Buy Now Button */}
