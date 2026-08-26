@@ -1,9 +1,15 @@
 {
   "/page": "app/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/courses/python-basics/page": "app/courses/python-basics/page.js",
+  "/roadmaps/page": "app/roadmaps/page.js",
+  "/courses/python-basics/[moduleId]/page": "app/courses/python-basics/[moduleId]/page.js",
+  "/courses/python-basics/[moduleId]/quiz/page": "app/courses/python-basics/[moduleId]/quiz/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
   "/companies/page": "app/companies/page.js",
-  "/auth/page": "app/auth/page.js",
-  "/profile/page": "app/profile/page.js",
   "/problems/page": "app/problems/page.js",
-  "/roadmaps/page": "app/roadmaps/page.js"
+  "/courses/page": "app/courses/page.js",
+  "/courses/[courseId]/page": "app/courses/[courseId]/page.js",
+  "/courses/[courseId]/[moduleId]/page": "app/courses/[courseId]/[moduleId]/page.js",
+  "/courses/[courseId]/[moduleId]/quiz/page": "app/courses/[courseId]/[moduleId]/quiz/page.js"
 }

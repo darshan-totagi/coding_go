@@ -4,15 +4,27 @@
       "static/media/gyByhwUxId8gMEwcGFWNOITd-s.p.d06edde1.woff2",
       "static/media/or3nQ6H_1_WfwkMZI_qYFrcdmhHkjko-s.p.9593fb78.woff2"
     ],
+    "[project]/src/app/courses/python-basics/page": [
+      "static/media/gyByhwUxId8gMEwcGFWNOITd-s.p.d06edde1.woff2",
+      "static/media/or3nQ6H_1_WfwkMZI_qYFrcdmhHkjko-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/roadmaps/page": [
+      "static/media/gyByhwUxId8gMEwcGFWNOITd-s.p.d06edde1.woff2",
+      "static/media/or3nQ6H_1_WfwkMZI_qYFrcdmhHkjko-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/courses/python-basics/[moduleId]/page": [
+      "static/media/gyByhwUxId8gMEwcGFWNOITd-s.p.d06edde1.woff2",
+      "static/media/or3nQ6H_1_WfwkMZI_qYFrcdmhHkjko-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/courses/python-basics/[moduleId]/quiz/page": [
+      "static/media/gyByhwUxId8gMEwcGFWNOITd-s.p.d06edde1.woff2",
+      "static/media/or3nQ6H_1_WfwkMZI_qYFrcdmhHkjko-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/_not-found/page": [
+      "static/media/gyByhwUxId8gMEwcGFWNOITd-s.p.d06edde1.woff2",
+      "static/media/or3nQ6H_1_WfwkMZI_qYFrcdmhHkjko-s.p.9593fb78.woff2"
+    ],
     "[project]/src/app/companies/page": [
-      "static/media/gyByhwUxId8gMEwcGFWNOITd-s.p.d06edde1.woff2",
-      "static/media/or3nQ6H_1_WfwkMZI_qYFrcdmhHkjko-s.p.9593fb78.woff2"
-    ],
-    "[project]/src/app/auth/page": [
-      "static/media/gyByhwUxId8gMEwcGFWNOITd-s.p.d06edde1.woff2",
-      "static/media/or3nQ6H_1_WfwkMZI_qYFrcdmhHkjko-s.p.9593fb78.woff2"
-    ],
-    "[project]/src/app/profile/page": [
       "static/media/gyByhwUxId8gMEwcGFWNOITd-s.p.d06edde1.woff2",
       "static/media/or3nQ6H_1_WfwkMZI_qYFrcdmhHkjko-s.p.9593fb78.woff2"
     ],
@@ -20,7 +32,19 @@
       "static/media/gyByhwUxId8gMEwcGFWNOITd-s.p.d06edde1.woff2",
       "static/media/or3nQ6H_1_WfwkMZI_qYFrcdmhHkjko-s.p.9593fb78.woff2"
     ],
-    "[project]/src/app/roadmaps/page": [
+    "[project]/src/app/courses/page": [
+      "static/media/gyByhwUxId8gMEwcGFWNOITd-s.p.d06edde1.woff2",
+      "static/media/or3nQ6H_1_WfwkMZI_qYFrcdmhHkjko-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/courses/[courseId]/page": [
+      "static/media/gyByhwUxId8gMEwcGFWNOITd-s.p.d06edde1.woff2",
+      "static/media/or3nQ6H_1_WfwkMZI_qYFrcdmhHkjko-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/courses/[courseId]/[moduleId]/page": [
+      "static/media/gyByhwUxId8gMEwcGFWNOITd-s.p.d06edde1.woff2",
+      "static/media/or3nQ6H_1_WfwkMZI_qYFrcdmhHkjko-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/courses/[courseId]/[moduleId]/quiz/page": [
       "static/media/gyByhwUxId8gMEwcGFWNOITd-s.p.d06edde1.woff2",
       "static/media/or3nQ6H_1_WfwkMZI_qYFrcdmhHkjko-s.p.9593fb78.woff2"
     ]

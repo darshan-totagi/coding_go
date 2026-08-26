@@ -98,23 +98,32 @@ export const Header: React.FC = () => {
             </Link>
             <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 bg-[#0e0e11] border border-white/10 rounded-2xl p-2 shadow-[0_10px_35px_rgba(0,0,0,0.8)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <div className="px-3 py-1.5 text-[10px] font-bold text-gray-500 uppercase tracking-wider border-b border-white/5 mb-1.5">
-                Learning Pathways
+                Courses
               </div>
               {[
-                { label: "Beginner DSA Masterclass", href: "/roadmaps" },
-                { label: "Intermediate DSA Pathway", href: "/roadmaps" },
-                { label: "Advanced Algorithm Spec", href: "/roadmaps" },
-                { label: "Google Interview Prep Path", href: "/roadmaps" },
-                { label: "Amazon Interview Prep Path", href: "/roadmaps" }
+                { label: "🐍 Python Basics", href: "/courses/python-basics", badge: "New" },
+                { label: "☕ Java Basics", href: "/courses/java-basics", badge: "New" },
+                { label: "🗄️ SQL Basics", href: "/courses/sql-basics", badge: "New" },
+                { label: "⚙️ C Programming", href: "/courses/c-programming", badge: "New" },
               ].map((sub) => (
                 <Link
                   key={sub.label}
                   href={sub.href}
-                  className="block px-4 py-2 text-[12px] font-semibold text-zinc-400 hover:text-white hover:bg-white/5 rounded-xl transition text-left"
+                  className="flex items-center justify-between px-4 py-2 text-[12px] font-semibold text-zinc-400 hover:text-white hover:bg-white/5 rounded-xl transition text-left"
                 >
-                  {sub.label}
+                  <span>{sub.label}</span>
+                  {sub.badge && (
+                    <span className="text-[9px] font-extrabold bg-gradient-to-r from-blue-500 to-purple-500 text-white px-1.5 py-0.5 rounded-full uppercase tracking-wider">
+                      {sub.badge}
+                    </span>
+                  )}
                 </Link>
               ))}
+              <div className="border-t border-white/5 mt-1.5 pt-1.5">
+                <Link href="/courses" className="flex items-center justify-center gap-1.5 px-4 py-2 text-[11px] font-bold text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 rounded-xl transition">
+                  View All Courses →
+                </Link>
+              </div>
             </div>
           </div>
 
