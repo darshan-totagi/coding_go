@@ -33,10 +33,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-50 dark:bg-[#030303] text-zinc-900 dark:text-[#f5f5f7] min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased page-shell text-[#f5f5f7] min-h-screen`}
       >
+        <div className="noise-overlay" aria-hidden />
         <AppProvider>
           {children}
           <BadgeUnlockModal />

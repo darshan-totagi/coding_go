@@ -85,7 +85,7 @@ export default function GenericModulePage({ params }: { params: Promise<{ course
   }, [courseId, userId]);
 
   if (!mounted || !progress) {
-    return <div className="flex flex-col min-h-screen bg-[#030303]"><Header /><div className="flex-1 flex items-center justify-center"><div className="w-8 h-8 border-2 border-white/10 border-t-orange-400 rounded-full animate-spin" /></div></div>;
+    return <div className="flex flex-col min-h-screen page-shell"><Header /><div className="flex-1 flex items-center justify-center"><div className="w-8 h-8 border-2 border-white/10 border-t-orange-400 rounded-full animate-spin" /></div></div>;
   }
 
   const unlocked = isCourseModuleUnlocked(moduleIndex, progress, course.modules);
@@ -95,7 +95,7 @@ export default function GenericModulePage({ params }: { params: Promise<{ course
 
   if (!unlocked) {
     return (
-      <div className="flex flex-col min-h-screen bg-[#030303]">
+      <div className="flex flex-col min-h-screen page-shell">
         <Header />
         <div className="flex-1 flex flex-col items-center justify-center gap-6 px-6 text-center">
           <div className="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center text-4xl border border-white/10">🔒</div>
@@ -117,12 +117,12 @@ export default function GenericModulePage({ params }: { params: Promise<{ course
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#030303] relative">
+    <div className="flex flex-col min-h-screen page-shell relative">
       <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-purple-600/4 blur-[150px] pointer-events-none" />
       <Header />
 
       {/* Sticky top bar */}
-      <div className="sticky top-[72px] z-30 bg-[#030303]/90 backdrop-blur-md border-b border-white/5">
+      <div className="sticky top-[72px] z-30 bg-[#070812]/90 backdrop-blur-md border-b border-white/5">
         <div className="max-w-4xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
             <Link href={`/courses/${courseId}`} className="text-zinc-500 hover:text-white transition shrink-0"><ArrowLeft className="w-4 h-4" /></Link>

@@ -66,7 +66,7 @@ export default function CertificatePage() {
 
   if (!mounted || !progress) {
     return (
-      <div className="flex flex-col min-h-screen bg-[#030303]">
+      <div className="flex flex-col min-h-screen page-shell">
         <Header />
         <div className="flex-1 flex items-center justify-center">
           <div className="w-8 h-8 border-2 border-amber-500/40 border-t-amber-500 rounded-full animate-spin" />
@@ -79,7 +79,7 @@ export default function CertificatePage() {
 
   if (!allPassed) {
     return (
-      <div className="flex flex-col min-h-screen bg-[#030303]">
+      <div className="flex flex-col min-h-screen page-shell">
         <Header />
         <div className="flex-1 flex flex-col items-center justify-center gap-8 px-6 text-center">
           <motion.div
@@ -138,7 +138,7 @@ export default function CertificatePage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#030303] relative overflow-x-clip">
+    <div className="flex flex-col min-h-screen page-shell relative overflow-x-clip">
       {/* Background */}
       <div className="absolute top-0 left-[20%] w-[500px] h-[500px] rounded-full bg-amber-500/5 blur-[130px] pointer-events-none" />
       <div className="absolute bottom-0 right-[10%] w-[400px] h-[400px] rounded-full bg-purple-500/5 blur-[120px] pointer-events-none" />

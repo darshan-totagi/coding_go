@@ -226,7 +226,7 @@ function CompaniesContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-50 dark:bg-[#030303] text-zinc-900 dark:text-[#f5f5f7]">
+    <div className="min-h-screen flex flex-col page-shell text-[#f5f5f7]">
       <Header />
       <SubNavbar />
 

@@ -86,7 +86,7 @@ export default function ResumeBuilderPage() {
   };
 
   return (
-    <div className="flex h-screen bg-[#030303] overflow-hidden print:bg-white print:text-black">
+    <div className="flex h-screen page-shell overflow-hidden print:bg-white print:text-black">
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="print:hidden">
           <Header />

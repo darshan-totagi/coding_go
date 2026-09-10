@@ -34,7 +34,7 @@ export default function ProfilePage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#030303] flex flex-col items-center justify-center p-6 text-center">
+      <div className="min-h-screen page-shell flex flex-col items-center justify-center p-6 text-center">
         <h3 className="text-xl font-bold text-white mb-4">Please Log In</h3>
         <p className="text-gray-400 text-sm mb-6">You need to sign in to access your developer profile.</p>
         <Link href="/auth">
@@ -65,7 +65,7 @@ export default function ProfilePage() {
   const daysOfWeek = Array.from({ length: 7 });
 
   return (
-    <div className="flex h-screen bg-[#030303] overflow-hidden">
+    <div className="flex h-screen page-shell overflow-hidden">
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />

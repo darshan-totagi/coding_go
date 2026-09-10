@@ -47,46 +47,57 @@ export default function LandingPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#030303] overflow-x-clip">
+    <div className="flex flex-col min-h-screen page-shell overflow-x-clip">
       <Header />
 
       {/* ── 1. HERO SECTION ───────────────────────────────────────────────── */}
       <section className="relative min-h-[92vh] flex items-center overflow-hidden">
-        {/* Background image with dark overlay */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1600&q=80')`,
-          }}
-        />
-        {/* Multi-layer overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#030303]/95 via-[#030303]/80 to-[#030303]/60" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-transparent to-[#030303]/30" />
-        {/* Color glows */}
-        <div className="absolute top-[20%] left-[5%] w-[500px] h-[500px] rounded-full bg-blue-600/20 blur-[130px] pointer-events-none" />
-        <div className="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full bg-purple-600/15 blur-[120px] pointer-events-none" />
+        <div className="absolute inset-0 grid-fade opacity-60" />
+        <div className="absolute top-[12%] left-[8%] w-[480px] h-[480px] rounded-full bg-violet-600/25 blur-[140px] pointer-events-none animate-pulse-slow" />
+        <div className="absolute bottom-[8%] right-[8%] w-[420px] h-[400px] rounded-full bg-cyan-500/15 blur-[130px] pointer-events-none animate-float" />
+
+        <motion.div
+          aria-hidden
+          className="hidden lg:block absolute right-[8%] top-1/2 -translate-y-1/2 w-[340px] h-[340px]"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.4, duration: 0.8 }}
+        >
+          <div className="absolute inset-8 rounded-3xl glass-panel-glow p-5 font-mono text-[11px] text-cyan-200/80 leading-relaxed animate-float-slow">
+            <p className="text-violet-300/80 mb-2">// daily challenge</p>
+            <p>function twoSum(nums, target) {"{"}</p>
+            <p className="pl-3">const map = new Map();</p>
+            <p className="pl-3">for (let i = 0; i {"<"} nums.length; i++) {"{"}</p>
+            <p className="pl-6">const need = target - nums[i];</p>
+            <p className="pl-6">if (map.has(need)) return [map.get(need), i];</p>
+            <p className="pl-6">map.set(nums[i], i);</p>
+            <p className="pl-3">{"}"}</p>
+            <p>{"}"}</p>
+          </div>
+          <div className="absolute -top-3 -right-2 px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+            Accepted · 98ms
+          </div>
+        </motion.div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 w-full py-20">
           <div className="max-w-2xl">
-            {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 bg-orange-500/15 border border-orange-500/30 px-4 py-2 rounded-full mb-6 uppercase tracking-widest"
+              className="inline-flex items-center gap-2 text-xs font-bold text-cyan-300 bg-cyan-500/10 border border-cyan-400/25 px-4 py-2 rounded-full mb-6 uppercase tracking-widest"
             >
-              <Flame className="w-3.5 h-3.5 fill-orange-400" />
+              <Flame className="w-3.5 h-3.5 fill-orange-400 text-orange-400" />
               #1 Coding Prep Platform for India
             </motion.div>
 
-            {/* Headline */}
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-5xl sm:text-6xl lg:text-7xl font-black text-white leading-[1.05] mb-6"
+              className="text-5xl sm:text-6xl lg:text-7xl font-black text-white leading-[1.05] mb-6 section-title"
             >
               Master Coding.{" "}
-              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+              <span className="animate-gradient bg-gradient-to-r from-violet-400 via-cyan-300 to-fuchsia-400 bg-clip-text text-transparent">
                 Crack Any Interview.
               </span>
             </motion.h1>
@@ -100,7 +111,6 @@ export default function LandingPage() {
               Practice 700+ problems, take structured courses, compete in contests, and get AI-powered guidance — all in one place.
             </motion.p>
 
-            {/* CTA Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -108,17 +118,19 @@ export default function LandingPage() {
               className="flex flex-wrap items-center gap-4 mb-10"
             >
               <Link href="/courses">
-                <button className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-xl text-sm shadow-[0_4px_30px_rgba(99,102,241,0.4)] transition-all hover:scale-105">
+                <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
+                  className="inline-flex items-center gap-2 px-8 py-4 btn-primary rounded-xl text-sm">
                   <GraduationCap className="w-4 h-4" />
-                  OUR COURSES
+                  Our Courses
                   <ArrowRight className="w-4 h-4" />
-                </button>
+                </motion.button>
               </Link>
               <Link href="/problems">
-                <button className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-xl text-sm backdrop-blur-sm transition-all hover:scale-105">
+                <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
+                  className="inline-flex items-center gap-2 px-8 py-4 btn-ghost text-white font-bold rounded-xl text-sm">
                   <Play className="w-4 h-4" />
-                  PRACTICE NOW
-                </button>
+                  Practice Now
+                </motion.button>
               </Link>
             </motion.div>
 
@@ -161,14 +173,15 @@ export default function LandingPage() {
       </section>
 
       {/* ── 2. SEARCH / QUICK ACCESS BAR ─────────────────────────────────── */}
-      <section className="relative bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 py-12 px-6">
-        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.05) 10px, rgba(255,255,255,0.05) 11px)" }} />
+      <section className="relative py-14 px-6 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-violet-700 via-indigo-600 to-cyan-700" />
+        <div className="absolute inset-0 opacity-30 animate-gradient bg-[length:200%_200%] bg-gradient-to-r from-fuchsia-500/20 via-transparent to-cyan-400/20" />
         <div className="max-w-4xl mx-auto relative z-10">
-          <h2 className="text-2xl sm:text-3xl font-black text-white text-center mb-2">
+          <h2 className="text-2xl sm:text-3xl font-black text-white text-center mb-2 section-title">
             Find Your Problem. Start Solving Now!
           </h2>
-          <p className="text-blue-200 text-center text-sm mb-6">Search from 700+ coding problems across all difficulty levels</p>
-          <div className="flex gap-0 rounded-2xl overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.4)] border border-white/20">
+          <p className="text-indigo-100 text-center text-sm mb-6">Search from 700+ coding problems across all difficulty levels</p>
+          <div className="flex gap-0 rounded-2xl overflow-hidden shadow-[0_12px_50px_rgba(0,0,0,0.35)] border border-white/25 backdrop-blur-sm">
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -178,9 +191,9 @@ export default function LandingPage() {
               className="flex-1 px-6 py-4 bg-white text-gray-800 text-sm font-medium placeholder-gray-400 outline-none min-w-0"
             />
             <Link href={`/problems${searchQuery ? `?search=${encodeURIComponent(searchQuery)}` : ""}`}>
-              <button className="px-8 py-4 bg-[#1a1a2e] hover:bg-[#0d0d1a] text-white font-bold text-sm uppercase tracking-wider transition-colors whitespace-nowrap flex items-center gap-2">
+              <button className="px-8 py-4 bg-[#0b0c18] hover:bg-black text-white font-bold text-sm uppercase tracking-wider transition-colors whitespace-nowrap flex items-center gap-2 h-full">
                 <Search className="w-4 h-4" />
-                SEARCH
+                Search
               </button>
             </Link>
           </div>
@@ -229,7 +242,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── 4. WHAT WE OFFER (3 big colored cards) ───────────────────────── */}
-      <section className="py-20 px-6 bg-[#030303]">
+      <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-14">
             <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
@@ -289,7 +302,9 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.12 }}
-                className={`relative rounded-3xl bg-gradient-to-br ${card.bg} p-8 flex flex-col gap-5 overflow-hidden ${card.glow} group hover:scale-[1.02] transition-transform duration-300`}
+                className={`relative rounded-3xl bg-gradient-to-br ${card.bg} p-8 flex flex-col gap-5 overflow-hidden ${card.glow} group shine`}
+                whileHover={{ y: -8, scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 260, damping: 20 }}
               >
                 {/* Background pattern */}
                 <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 80% 20%, white 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
@@ -579,12 +594,14 @@ export default function LandingPage() {
       </section>
 
       {/* ── 8. TRUSTED BY ─────────────────────────────────────────────────── */}
-      <section className="py-12 px-6 border-b border-white/5">
-        <div className="max-w-5xl mx-auto text-center">
-          <p className="text-xs font-bold text-zinc-600 uppercase tracking-widest mb-8">Our Alumni Land Offers At</p>
-          <div className="flex flex-wrap justify-center items-center gap-10">
-            {["Google", "Microsoft", "Amazon", "Meta", "NVIDIA", "Uber", "Apple", "Flipkart"].map((company) => (
-              <span key={company} className="text-zinc-600 hover:text-white text-base font-black transition duration-300 cursor-default">{company}</span>
+      <section className="py-12 border-b border-white/5 overflow-hidden">
+        <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-8 text-center">Our Alumni Land Offers At</p>
+        <div className="relative">
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#05060f] to-transparent z-10" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#05060f] to-transparent z-10" />
+          <div className="flex w-max animate-marquee gap-16 px-8">
+            {["Google", "Microsoft", "Amazon", "Meta", "NVIDIA", "Uber", "Apple", "Flipkart", "Google", "Microsoft", "Amazon", "Meta", "NVIDIA", "Uber", "Apple", "Flipkart"].map((company, i) => (
+              <span key={`${company}-${i}`} className="text-zinc-500 hover:text-white text-lg font-black transition duration-300 cursor-default whitespace-nowrap">{company}</span>
             ))}
           </div>
         </div>
@@ -698,15 +715,15 @@ export default function LandingPage() {
           <h2 className="text-4xl sm:text-5xl font-black text-white mb-4">Ready to Level Up?</h2>
           <p className="text-zinc-300 text-base mb-8">Join 832,000+ developers already building their careers on CodePlace.</p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link href={user ? "/problems" : "/auth"}>
-              <button className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-black rounded-xl text-sm shadow-[0_4px_30px_rgba(99,102,241,0.4)] transition hover:scale-105">
+              <Link href={user ? "/problems" : "/auth"}>
+              <button className="inline-flex items-center gap-2 px-8 py-4 btn-primary rounded-xl text-sm">
                 <Zap className="w-4 h-4" />
                 {user ? "Continue Practicing" : "Get Started Free"}
                 <ArrowRight className="w-4 h-4" />
               </button>
             </Link>
             <Link href="/courses">
-              <button className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-xl text-sm backdrop-blur-sm transition hover:scale-105">
+              <button className="inline-flex items-center gap-2 px-8 py-4 btn-ghost text-white font-bold rounded-xl text-sm">
                 <GraduationCap className="w-4 h-4" /> Browse Courses
               </button>
             </Link>

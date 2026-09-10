@@ -73,15 +73,16 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-mesh-dark flex items-center justify-center p-6 relative">
-      <div className="absolute top-[10%] left-[10%] w-[350px] h-[350px] bg-brand-purple-glow/10 blur-[100px] pointer-events-none rounded-full"></div>
-      <div className="absolute bottom-[10%] right-[10%] w-[350px] h-[350px] bg-brand-cyan-glow/10 blur-[100px] pointer-events-none rounded-full"></div>
+    <div className="min-h-screen page-shell flex items-center justify-center p-6 relative overflow-hidden">
+      <div className="absolute inset-0 grid-fade opacity-40" />
+      <div className="absolute top-[10%] left-[10%] w-[350px] h-[350px] bg-violet-500/20 blur-[100px] pointer-events-none rounded-full animate-pulse-slow"></div>
+      <div className="absolute bottom-[10%] right-[10%] w-[350px] h-[350px] bg-cyan-400/15 blur-[100px] pointer-events-none rounded-full"></div>
 
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-md rounded-2xl glass-panel-glow border border-brand-purple-500/20 p-8 shadow-glass-glow space-y-6"
+        initial={{ opacity: 0, y: 24, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="w-full max-w-md rounded-3xl glass-panel-glow p-8 space-y-6 relative z-10"
       >
         {/* Brand */}
         <div className="text-center space-y-2">
@@ -110,7 +111,7 @@ export default function AuthPage() {
             onClick={() => { setMode("signin"); setError(""); }}
             className={`py-1.5 text-xs font-semibold rounded-md transition ${
               mode === "signin"
-                ? "bg-brand-purple-600 text-white shadow-glass-glow"
+                ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-glass-glow"
                 : "text-gray-400 hover:text-white"
             }`}
           >
@@ -121,7 +122,7 @@ export default function AuthPage() {
             onClick={() => { setMode("signup"); setError(""); }}
             className={`py-1.5 text-xs font-semibold rounded-md transition ${
               mode === "signup"
-                ? "bg-brand-purple-600 text-white shadow-glass-glow"
+                ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-glass-glow"
                 : "text-gray-400 hover:text-white"
             }`}
           >
@@ -191,7 +192,7 @@ export default function AuthPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 bg-brand-purple-600 hover:bg-brand-purple-700 disabled:bg-brand-purple-800 text-white rounded-lg font-semibold text-sm transition flex items-center justify-center gap-2"
+            className="w-full py-2.5 btn-primary disabled:opacity-60 rounded-xl font-semibold text-sm flex items-center justify-center gap-2"
           >
             {loading ? "Authenticating..." : mode === "signin" ? "Sign In" : "Sign Up"}
             {!loading && <ArrowRight className="w-4 h-4" />}
@@ -208,21 +209,21 @@ export default function AuthPage() {
             <button
               type="button"
               onClick={() => handleSocialLogin("Google")}
-              className="py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-medium text-white transition"
+              className="py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-medium text-white transition hover:-translate-y-0.5"
             >
               Google
             </button>
             <button
               type="button"
               onClick={() => handleSocialLogin("GitHub")}
-              className="py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-medium text-white transition"
+              className="py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-medium text-white transition hover:-translate-y-0.5"
             >
               GitHub
             </button>
             <button
               type="button"
               onClick={() => handleSocialLogin("LinkedIn")}
-              className="py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-medium text-white transition"
+              className="py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-medium text-white transition hover:-translate-y-0.5"
             >
               LinkedIn
             </button>

@@ -97,7 +97,7 @@ export const BadgeUnlockModal: React.FC = () => {
           <div>
             <button
               onClick={clearNewlyUnlockedBadge}
-              className="w-full py-3 bg-gradient-to-r from-brand-purple-600 to-brand-cyan-500 hover:from-brand-purple-700 hover:to-brand-cyan-600 text-white font-bold rounded-xl text-sm transition-all duration-300 shadow-glass-glow shadow-brand-purple-500/25"
+              className="w-full py-3 btn-primary rounded-xl text-sm"
             >
               Claim Badge & Continue
             </button>

@@ -25,21 +25,21 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="w-full bg-slate-950/80 backdrop-blur-md border-t border-white/10 mt-auto pt-12 pb-8 px-4 sm:px-6 lg:px-8 text-gray-400">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 lg:gap-10 pb-12 border-b border-white/10">
-        
-        {/* Brand & Mission Column */}
+    <footer className="w-full relative mt-auto pt-16 pb-8 px-4 sm:px-6 lg:px-8 text-zinc-400 border-t border-white/8 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-t from-violet-950/30 via-transparent to-transparent pointer-events-none" />
+      <div className="max-w-7xl mx-auto relative z-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 lg:gap-10 pb-12 border-b border-white/8">
+
         <div className="space-y-4">
           <Link href="/" className="inline-flex items-center gap-2.5 group">
-            <span className="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-purple-600 via-brand-purple-500 to-brand-cyan-400 flex items-center justify-center font-black text-white shadow-lg shadow-brand-purple-500/20 group-hover:scale-105 transition-transform">
+            <span className="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 via-indigo-500 to-cyan-400 flex items-center justify-center font-black text-white shadow-lg shadow-violet-500/25 group-hover:scale-105 transition-transform">
               <Code2 className="w-5 h-5" />
             </span>
-            <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-gray-100 to-brand-purple-300 bg-clip-text text-transparent">
+            <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-zinc-100 to-violet-300 bg-clip-text text-transparent">
               Codeplace
             </span>
           </Link>
 
-          <p className="text-xs sm:text-sm text-gray-400 leading-relaxed">
+          <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
             The next-generation AI-powered developer platform. Master algorithms, practice real-world challenges, build ATS-ready resumes, and unlock tech roles.
           </p>
 
@@ -48,7 +48,7 @@ export const Footer: React.FC = () => {
               href="https://github.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 hover:border-brand-purple-500/40 transition"
+              className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 hover:border-violet-500/40 transition hover:-translate-y-0.5"
               aria-label="GitHub"
             >
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -59,7 +59,7 @@ export const Footer: React.FC = () => {
               href="https://twitter.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-brand-cyan-400 hover:bg-white/10 hover:border-brand-cyan-500/40 transition"
+              className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-cyan-300 hover:bg-white/10 hover:border-cyan-500/40 transition hover:-translate-y-0.5"
               aria-label="Twitter"
             >
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -70,7 +70,7 @@ export const Footer: React.FC = () => {
               href="https://linkedin.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-brand-cyan-400 hover:bg-white/10 hover:border-brand-cyan-500/40 transition"
+              className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-cyan-300 hover:bg-white/10 hover:border-cyan-500/40 transition hover:-translate-y-0.5"
               aria-label="LinkedIn"
             >
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -79,7 +79,7 @@ export const Footer: React.FC = () => {
             </a>
             <a
               href="mailto:support@codeplace.dev"
-              className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-brand-purple-400 hover:bg-white/10 hover:border-brand-purple-500/40 transition"
+              className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-violet-300 hover:bg-white/10 hover:border-violet-500/40 transition hover:-translate-y-0.5"
               aria-label="Email"
             >
               <Mail className="w-4 h-4" />
@@ -87,34 +87,31 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Platform Links */}
         <div>
           <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4">Platform</h4>
           <ul className="space-y-2.5 text-xs sm:text-sm">
-            <li><Link href="/problems" className="hover:text-brand-cyan-400 transition">Problem Sets</Link></li>
-            <li><Link href="/companies" className="hover:text-brand-cyan-400 transition">Company Questions</Link></li>
-            <li><Link href="/roadmaps" className="hover:text-brand-cyan-400 transition">Learning Roadmaps</Link></li>
-            <li><Link href="/contests" className="hover:text-brand-cyan-400 transition">Live Contests</Link></li>
-            <li><Link href="/community" className="hover:text-brand-cyan-400 transition">Community Hub</Link></li>
+            <li><Link href="/problems" className="hover:text-cyan-300 transition">Problem Sets</Link></li>
+            <li><Link href="/companies" className="hover:text-cyan-300 transition">Company Questions</Link></li>
+            <li><Link href="/roadmaps" className="hover:text-cyan-300 transition">Learning Roadmaps</Link></li>
+            <li><Link href="/contests" className="hover:text-cyan-300 transition">Live Contests</Link></li>
+            <li><Link href="/community" className="hover:text-cyan-300 transition">Community Hub</Link></li>
           </ul>
         </div>
 
-        {/* Enterprise & Tools Links */}
         <div>
           <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4">Solutions</h4>
           <ul className="space-y-2.5 text-xs sm:text-sm">
-            <li><Link href="/resume" className="hover:text-brand-cyan-400 transition">ATS Resume Auditor</Link></li>
-            <li><Link href="/recruiter" className="hover:text-brand-cyan-400 transition">For Recruiters</Link></li>
-            <li><Link href="/pricing" className="hover:text-brand-cyan-400 transition">Pro Membership</Link></li>
-            <li><Link href="/admin" className="hover:text-brand-cyan-400 transition">Platform Metrics</Link></li>
-            <li><Link href="/auth" className="hover:text-brand-cyan-400 transition">Get Started</Link></li>
+            <li><Link href="/resume" className="hover:text-cyan-300 transition">ATS Resume Auditor</Link></li>
+            <li><Link href="/recruiter" className="hover:text-cyan-300 transition">For Recruiters</Link></li>
+            <li><Link href="/pricing" className="hover:text-cyan-300 transition">Pro Membership</Link></li>
+            <li><Link href="/admin" className="hover:text-cyan-300 transition">Platform Metrics</Link></li>
+            <li><Link href="/auth" className="hover:text-cyan-300 transition">Get Started</Link></li>
           </ul>
         </div>
 
-        {/* Newsletter Section */}
         <div className="space-y-4">
           <h4 className="text-xs font-bold text-white uppercase tracking-wider">Stay Ahead</h4>
-          <p className="text-xs text-gray-400 leading-relaxed">
+          <p className="text-xs text-zinc-400 leading-relaxed">
             Get weekly DSA cheat sheets, system design updates, and contest alerts.
           </p>
 
@@ -125,15 +122,15 @@ export const Footer: React.FC = () => {
                 placeholder="you@domain.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full min-w-0 px-3.5 py-2 text-xs rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-brand-purple-500/50 focus:ring-1 focus:ring-brand-purple-500/50 transition"
+                className="w-full min-w-0 px-3.5 py-2 text-xs rounded-xl glass-input placeholder-zinc-500"
                 required
               />
               <button
                 type="submit"
                 aria-label="Subscribe to newsletter"
-                className="px-3.5 py-2 bg-gradient-to-r from-brand-purple-600 to-brand-purple-500 hover:from-brand-purple-500 hover:to-brand-purple-400 text-white rounded-xl font-medium transition shadow-md shadow-brand-purple-500/20 shrink-0 flex items-center justify-center"
+                className="px-3.5 py-2 btn-primary rounded-xl shrink-0 flex items-center justify-center"
               >
-                {subscribed ? <Check className="w-4 h-4 text-emerald-300" /> : <Send className="w-4 h-4" />}
+                {subscribed ? <Check className="w-4 h-4 text-emerald-200" /> : <Send className="w-4 h-4" />}
               </button>
             </div>
             {subscribed && (
@@ -143,27 +140,26 @@ export const Footer: React.FC = () => {
             )}
           </form>
 
-          <div className="pt-1 flex items-center gap-1.5 text-[11px] text-brand-purple-400">
+          <div className="pt-1 flex items-center gap-1.5 text-[11px] text-violet-300">
             <Sparkles className="w-3.5 h-3.5 shrink-0" />
             <span>Pro plan starting at ₹299/year</span>
           </div>
         </div>
       </div>
 
-      {/* Bottom copyright & legal bar */}
-      <div className="max-w-7xl mx-auto pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4 text-center sm:text-left">
+      <div className="max-w-7xl mx-auto pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 gap-4 text-center sm:text-left relative z-10">
         <div className="flex items-center gap-1.5 flex-wrap justify-center sm:justify-start">
           <span>&copy; {new Date().getFullYear()} Codeplace Inc. All rights reserved.</span>
           <span className="hidden sm:inline">•</span>
           <span className="flex items-center gap-1">
-            Built with <Heart className="w-3 h-3 text-red-500 fill-red-500 inline" /> for developers
+            Built with <Heart className="w-3 h-3 text-rose-500 fill-red-500 inline" /> for developers
           </span>
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-4 text-xs">
-          <Link href="/pricing" className="hover:text-gray-300 transition">Privacy Policy</Link>
-          <Link href="/pricing" className="hover:text-gray-300 transition">Terms of Service</Link>
-          <Link href="/pricing" className="hover:text-gray-300 transition">Sitemap</Link>
+          <Link href="/pricing" className="hover:text-zinc-300 transition">Privacy Policy</Link>
+          <Link href="/pricing" className="hover:text-zinc-300 transition">Terms of Service</Link>
+          <Link href="/pricing" className="hover:text-zinc-300 transition">Sitemap</Link>
         </div>
       </div>
     </footer>

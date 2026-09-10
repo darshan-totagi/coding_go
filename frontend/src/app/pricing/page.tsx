@@ -87,7 +87,7 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="flex h-screen bg-[#030303] overflow-hidden">
+    <div className="flex h-screen page-shell overflow-hidden">
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
 
@@ -111,10 +111,10 @@ export default function PricingPage() {
             {plans.map((plan) => (
               <div
                 key={plan.name}
-                className={`rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 relative ${
+                className={`rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 relative card-hover ${
                   plan.popular
-                    ? "bg-brand-purple-950/15 border-2 border-brand-purple-500/50 shadow-glass-glow shadow-brand-purple-500/5"
-                    : "glass-panel border border-white/10 hover:border-white/20"
+                    ? "glass-panel-glow scale-[1.02]"
+                    : "glass-panel"
                 }`}
               >
                 {plan.popular && (

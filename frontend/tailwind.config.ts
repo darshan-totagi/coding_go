@@ -74,6 +74,8 @@ export default {
         "float": "float 8s ease-in-out infinite",
         "float-delayed": "float 8s ease-in-out infinite 4s",
         "shimmer": "shimmer 2s linear infinite",
+        "fade-up": "fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both",
+        "spin-slow": "spin 18s linear infinite",
       },
       keyframes: {
         float: {
@@ -82,6 +84,10 @@ export default {
         },
         shimmer: {
           "100%": { transform: "translateX(100%)" },
+        },
+        fadeUp: {
+          "0%": { opacity: "0", transform: "translateY(18px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
       },
     },

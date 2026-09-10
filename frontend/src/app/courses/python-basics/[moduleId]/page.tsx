@@ -140,7 +140,7 @@ export default function ModulePage({ params }: { params: Promise<{ moduleId: str
 
   if (!mounted || !progress) {
     return (
-      <div className="flex flex-col min-h-screen bg-[#030303]">
+      <div className="flex flex-col min-h-screen page-shell">
         <Header />
         <div className="flex-1 flex items-center justify-center">
           <div className="w-8 h-8 border-2 border-brand-purple-500/40 border-t-brand-purple-500 rounded-full animate-spin" />
@@ -151,7 +151,7 @@ export default function ModulePage({ params }: { params: Promise<{ moduleId: str
 
   if (!currentModule) {
     return (
-      <div className="flex flex-col min-h-screen bg-[#030303]">
+      <div className="flex flex-col min-h-screen page-shell">
         <Header />
         <div className="flex-1 flex flex-col items-center justify-center gap-4">
           <p className="text-zinc-400">Module not found.</p>
@@ -170,7 +170,7 @@ export default function ModulePage({ params }: { params: Promise<{ moduleId: str
 
   if (!unlocked) {
     return (
-      <div className="flex flex-col min-h-screen bg-[#030303]">
+      <div className="flex flex-col min-h-screen page-shell">
         <Header />
         <div className="flex-1 flex flex-col items-center justify-center gap-6 px-6 text-center">
           <div className="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center text-4xl border border-white/10">🔒</div>
@@ -216,14 +216,14 @@ export default function ModulePage({ params }: { params: Promise<{ moduleId: str
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#030303] relative">
+    <div className="flex flex-col min-h-screen page-shell relative">
       <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-purple-600/5 blur-[150px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-blue-600/5 blur-[120px] pointer-events-none" />
 
       <Header />
 
       {/* Sticky top progress bar */}
-      <div className="sticky top-[72px] z-30 bg-[#030303]/90 backdrop-blur-md border-b border-white/5">
+      <div className="sticky top-[72px] z-30 bg-[#070812]/90 backdrop-blur-md border-b border-white/5">
         <div className="max-w-4xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
             <Link href="/courses/python-basics" className="text-zinc-500 hover:text-white transition shrink-0">

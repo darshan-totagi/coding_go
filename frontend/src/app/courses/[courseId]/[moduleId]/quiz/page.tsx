@@ -130,7 +130,7 @@ export default function GenericQuizPage({ params }: { params: Promise<{ courseId
 
   const handleReset = () => { setSelectedAnswers([]); setSubmitted(false); setScore(0); window.scrollTo({ top: 0, behavior: "smooth" }); };
 
-  if (!mounted || !progress) return <div className="flex flex-col min-h-screen bg-[#030303]"><Header /><div className="flex-1 flex items-center justify-center"><div className="w-8 h-8 border-2 border-white/10 border-t-orange-400 rounded-full animate-spin" /></div></div>;
+  if (!mounted || !progress) return <div className="flex flex-col min-h-screen page-shell"><Header /><div className="flex-1 flex items-center justify-center"><div className="w-8 h-8 border-2 border-white/10 border-t-orange-400 rounded-full animate-spin" /></div></div>;
 
   const unlocked = isCourseModuleUnlocked(moduleIndex, progress, course.modules);
   const modProg = progress.modules[moduleId];
@@ -138,7 +138,7 @@ export default function GenericQuizPage({ params }: { params: Promise<{ courseId
 
   if (!unlocked || !isContentDone) {
     return (
-      <div className="flex flex-col min-h-screen bg-[#030303]"><Header />
+      <div className="flex flex-col min-h-screen page-shell"><Header />
         <div className="flex-1 flex flex-col items-center justify-center gap-6 px-6 text-center">
           <div className="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center text-4xl border border-white/10">{!unlocked ? "🔒" : "📖"}</div>
           <div><h1 className="text-2xl font-black text-white mb-2">{!unlocked ? "Module Locked" : "Complete Learning Content First"}</h1>
@@ -185,9 +185,9 @@ export default function GenericQuizPage({ params }: { params: Promise<{ courseId
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#030303] relative">
+    <div className="flex flex-col min-h-screen page-shell relative">
       <Header />
-      <div className="sticky top-[72px] z-30 bg-[#030303]/90 backdrop-blur-md border-b border-white/5">
+      <div className="sticky top-[72px] z-30 bg-[#070812]/90 backdrop-blur-md border-b border-white/5">
         <div className="max-w-3xl mx-auto px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href={`/courses/${courseId}/${moduleId}`} className="text-zinc-500 hover:text-white transition"><ArrowLeft className="w-4 h-4" /></Link>

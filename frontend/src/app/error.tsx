@@ -15,7 +15,7 @@ export default function ErrorBoundary({
   }, [error]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#030303] text-[#f5f5f7] p-6 text-center space-y-6">
+    <div className="flex flex-col items-center justify-center min-h-screen page-shell text-[#f5f5f7] p-6 text-center space-y-6">
       <div className="p-4 rounded-full bg-red-500/10 border border-red-500/20 text-red-400">
         <AlertTriangle className="w-10 h-10 animate-pulse" />
       </div>

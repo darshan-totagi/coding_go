@@ -129,7 +129,7 @@ export default function AdminPanelPage() {
   };
 
   return (
-    <div className="flex h-screen bg-[#030303] overflow-hidden">
+    <div className="flex h-screen page-shell overflow-hidden">
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
 

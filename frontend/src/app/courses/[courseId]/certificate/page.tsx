@@ -44,7 +44,7 @@ export default function GenericCertificatePage({ params }: { params: Promise<{ c
     }
   }, [mounted]);
 
-  if (!mounted) return <div className="flex flex-col min-h-screen bg-[#030303]"><Header /><div className="flex-1 flex items-center justify-center"><div className="w-8 h-8 border-2 border-white/10 border-t-amber-400 rounded-full animate-spin" /></div></div>;
+  if (!mounted) return <div className="flex flex-col min-h-screen page-shell"><Header /><div className="flex-1 flex items-center justify-center"><div className="w-8 h-8 border-2 border-white/10 border-t-amber-400 rounded-full animate-spin" /></div></div>;
 
   const progress = loadCourseProgress(courseId, userId, course.modules);
   const allPassed = Object.values(progress.modules).every((m) => m.passed);
@@ -58,7 +58,7 @@ export default function GenericCertificatePage({ params }: { params: Promise<{ c
 
   if (!allPassed) {
     return (
-      <div className="flex flex-col min-h-screen bg-[#030303]"><Header />
+      <div className="flex flex-col min-h-screen page-shell"><Header />
         <div className="flex-1 flex flex-col items-center justify-center gap-6 px-6 text-center">
           <div className="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center text-4xl border border-white/10">🔒</div>
           <div><h1 className="text-2xl font-black text-white mb-2">Certificate Locked</h1>
@@ -72,7 +72,7 @@ export default function GenericCertificatePage({ params }: { params: Promise<{ c
   const handleDownload = () => { if (!certRef.current) return; window.print(); };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#030303] relative overflow-x-clip">
+    <div className="flex flex-col min-h-screen page-shell relative overflow-x-clip">
       <div className="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-amber-600/8 to-transparent pointer-events-none" />
       <style>{`@media print { .no-print { display: none !important; } body { background: white !important; } .cert-container { box-shadow: none !important; } }`}</style>
       <Header />

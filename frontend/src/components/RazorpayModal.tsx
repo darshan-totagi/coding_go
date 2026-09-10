@@ -273,7 +273,7 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({ isOpen, onClose, p
             <button
               onClick={handlePayment}
               disabled={isProcessing}
-              className="w-full py-3 bg-brand-purple-600 hover:bg-brand-purple-700 disabled:bg-brand-purple-800 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition"
+              className="w-full py-3 btn-primary disabled:opacity-60 rounded-xl font-semibold flex items-center justify-center gap-2"
             >
               {isProcessing ? (
                 <>

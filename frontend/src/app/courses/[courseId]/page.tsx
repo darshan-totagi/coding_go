@@ -6,23 +6,47 @@ import { useApp } from "@/context/AppContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { CheckCircle, Lock, PlayCircle, BookOpen, Award, ChevronRight, Clock, Star, Zap, Trophy, BarChart3, ArrowRight, GraduationCap } from "lucide-react";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Lock, PlayCircle, Award, ChevronRight, Clock, Star,
+  Zap, Trophy, GraduationCap, ChevronDown, FileText,
+  HelpCircle, Download, Smartphone, MessageCircle,
+  Users, Bookmark, BookOpen,
+} from "lucide-react";
 import { COURSE_REGISTRY } from "@/data/courseRegistry";
-import { COURSE_COLORS, PASS_THRESHOLD, loadCourseProgress, saveCourseProgress, createEmptyCourseProgress, isCourseModuleUnlocked, getCourseOverallProgress, CourseProgress } from "@/data/courseTypes";
+import {
+  COURSE_COLORS, PASS_THRESHOLD,
+  loadCourseProgress, saveCourseProgress,
+  createEmptyCourseProgress, isCourseModuleUnlocked,
+  getCourseOverallProgress, CourseProgress,
+} from "@/data/courseTypes";
 import { notFound } from "next/navigation";
+
+const COURSE_PHOTOS = ["/course-img-1.jpg", "/course-img-2.jpg", "/course-img-3.jpg"];
+
+const INCLUDES = [
+  { icon: PlayCircle,  label: "65 hours on demand video" },
+  { icon: Download,    label: "45 downloadable resources" },
+  { icon: Smartphone,  label: "Access on mobile and TV" },
+  { icon: FileText,    label: "86 articles" },
+  { icon: Clock,       label: "30 min personal weekly session" },
+  { icon: Users,       label: "Meeting with Oxford Professor" },
+  { icon: Award,       label: "Certificate of completion" },
+];
 
 export default function CourseOverviewPage({ params }: { params: Promise<{ courseId: string }> }) {
   const { courseId } = use(params);
   const { user } = useApp();
   const [progress, setProgress] = useState<CourseProgress | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
+  const [allExpanded, setAllExpanded] = useState(false);
 
   const course = COURSE_REGISTRY[courseId];
   if (!course) notFound();
 
   const userId = user?.id || "anonymous";
-  const c = COURSE_COLORS[course.color];
 
   useEffect(() => {
     setMounted(true);
@@ -34,14 +58,20 @@ export default function CourseOverviewPage({ params }: { params: Promise<{ cours
     } else {
       setProgress(p);
     }
+    if (course.modules.length > 0) {
+      setExpandedModules(new Set([course.modules[0].id]));
+    }
   }, [courseId, userId]);
 
   if (!mounted || !progress) {
     return (
-      <div className="flex flex-col min-h-screen bg-[#030303]">
+      <div className="flex flex-col min-h-screen page-shell">
         <Header />
         <div className="flex-1 flex items-center justify-center">
-          <div className={`w-8 h-8 border-2 border-t-orange-400 rounded-full animate-spin`} style={{ borderColor: "rgba(255,255,255,0.1)", borderTopColor: "#fb923c" }} />
+          <div
+            className="w-8 h-8 border-2 rounded-full animate-spin"
+            style={{ borderColor: "rgba(0,0,0,0.1)", borderTopColor: "#7c3aed" }}
+          />
         </div>
       </div>
     );
@@ -50,223 +80,341 @@ export default function CourseOverviewPage({ params }: { params: Promise<{ cours
   const overallPercent = getCourseOverallProgress(progress, course.modules);
   const passedCount = Object.values(progress.modules).filter((m) => m.passed).length;
   const allPassed = passedCount === course.modules.length;
+  const totalLectures = course.modules.reduce((acc, m) => acc + m.topics.length, 0);
+
+  const photoIdx = courseId.charCodeAt(0) % COURSE_PHOTOS.length;
+  const coursePhoto = COURSE_PHOTOS[photoIdx];
+
+  const toggleModule = (id: string) => {
+    setExpandedModules((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const toggleAll = () => {
+    if (allExpanded) {
+      setExpandedModules(new Set());
+    } else {
+      setExpandedModules(new Set(course.modules.map((m) => m.id)));
+    }
+    setAllExpanded(!allExpanded);
+  };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#030303] relative overflow-x-clip">
-      <div className="absolute top-[10%] left-[-5%] w-[500px] h-[500px] rounded-full bg-orange-600/6 blur-[130px] pointer-events-none" />
-      <div className="absolute top-[40%] right-[-5%] w-[400px] h-[400px] rounded-full bg-purple-600/6 blur-[120px] pointer-events-none" />
-
+    <div className="flex flex-col min-h-screen page-shell">
       <Header />
 
-      {/* Hero Banner */}
-      <section className="relative py-12 px-6 border-b border-white/5 bg-gradient-to-br from-[#0d0d1a] to-[#0a0a12]">
-        <div className="max-w-6xl mx-auto relative z-10">
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-xs text-zinc-500 mb-6">
-            <Link href="/" className="hover:text-white transition">Home</Link>
-            <ChevronRight className="w-3 h-3" />
-            <Link href="/courses" className="hover:text-white transition">Courses</Link>
-            <ChevronRight className="w-3 h-3" />
-            <span className="text-white font-semibold">{course.title}</span>
-          </div>
+      {/* Breadcrumb */}
+      <div className="bg-white/5 border-b border-white/8 px-6 py-3">
+        <div className="max-w-7xl mx-auto flex items-center gap-2 text-xs text-gray-500">
+          <Link href="/courses" className="hover:text-cyan-300 transition font-medium">
+            Courses
+          </Link>
+          <ChevronRight className="w-3 h-3" />
+          <span className="text-gray-400">Popular courses</span>
+          <ChevronRight className="w-3 h-3" />
+          <span className="text-white font-semibold truncate max-w-xs">{course.title}</span>
+        </div>
+      </div>
 
-          <div className="flex flex-col lg:flex-row gap-10 items-start">
-            <div className="flex-1 space-y-5">
+      {/* Two-column layout */}
+      <div className="max-w-7xl mx-auto px-6 py-8 w-full flex flex-col lg:flex-row gap-8 items-start">
+
+        {/* ── LEFT: Main Content ── */}
+        <div className="flex-1 min-w-0 space-y-6">
+
+          {/* Course header card */}
+          <div className="glass-panel rounded-2xl p-7">
+            <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <span className="text-3xl">{course.icon}</span>
-                <span className={`text-xs font-bold px-2.5 py-1 rounded-full border uppercase tracking-wider ${c.badge}`}>
-                  {course.level}
-                </span>
+                <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                <span className="text-sm font-bold text-white">4.9</span>
+                <span className="text-xs text-gray-400">based on</span>
+                <span className="text-xs text-purple-600 font-semibold underline cursor-pointer">236 reviews</span>
               </div>
-              <h1 className="text-4xl sm:text-5xl font-black text-white leading-tight">{course.title}</h1>
-              <p className="text-zinc-400 text-base leading-relaxed max-w-xl">{course.description}</p>
-              <div className="flex flex-wrap gap-4">
-                <div className="flex items-center gap-1.5 text-xs text-zinc-400"><BookOpen className={`w-4 h-4 ${c.badgeText}`} />{course.modules.length} Modules</div>
-                <div className="flex items-center gap-1.5 text-xs text-zinc-400"><Clock className="w-4 h-4 text-purple-400" />{course.totalHours}</div>
-                <div className="flex items-center gap-1.5 text-xs text-zinc-400"><Star className="w-4 h-4 text-amber-400 fill-amber-400" />{course.modules.length * 5} Quiz Questions</div>
-                <div className="flex items-center gap-1.5 text-xs text-zinc-400"><Award className="w-4 h-4 text-emerald-400" />Certificate on Completion</div>
-              </div>
+              <button className="p-1.5 rounded-lg hover:bg-white/5 transition">
+                <Bookmark className="w-5 h-5 text-purple-500" />
+              </button>
             </div>
 
-            {/* Progress Card */}
-            <div className="w-full lg:w-80 shrink-0">
-              <div className="rounded-2xl bg-white/[0.04] border border-white/10 p-6 space-y-5 backdrop-blur-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-bold text-white">Your Progress</span>
-                  <span className={`text-sm font-black ${c.badgeText}`}>{overallPercent}%</span>
+            <h1 className="text-2xl font-black text-white leading-snug mb-3">{course.title}</h1>
+            <p className="text-zinc-400 text-sm leading-relaxed mb-5">{course.description}</p>
+
+            <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-white/8">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">
+                  {course.title.charAt(0)}
                 </div>
-                <div className="relative h-2.5 rounded-full bg-white/5 overflow-hidden">
+                <span className="text-sm font-semibold text-purple-600">
+                  {course.title.split(" ")[0]} Instructor
+                </span>
+              </div>
+              <div className="flex items-center gap-1 text-xs text-gray-500">
+                <Users className="w-3.5 h-3.5" />
+                250+ students bought this course
+              </div>
+              <div className="flex items-center gap-1 text-xs text-gray-500">
+                <MessageCircle className="w-3.5 h-3.5" />
+                98% students recommend this course
+              </div>
+            </div>
+          </div>
+
+          {/* Course content accordion */}
+          <div className="glass-panel rounded-2xl p-7">
+            <h2 className="text-lg font-black text-white mb-4">Course content</h2>
+
+            <div className="flex flex-wrap items-center gap-5 text-xs text-zinc-400 mb-5 pb-4 border-b border-white/8">
+              <div className="flex items-center gap-1.5">
+                <BookOpen className="w-3.5 h-3.5 text-gray-400" />
+                <span><strong className="text-zinc-200">{course.modules.length}</strong> sections</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <PlayCircle className="w-3.5 h-3.5 text-gray-400" />
+                <span><strong className="text-zinc-200">{totalLectures}</strong> lectures</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-gray-400" />
+                <span><strong className="text-zinc-200">{course.totalHours}</strong> total length</span>
+              </div>
+              <button
+                onClick={toggleAll}
+                className="ml-auto text-cyan-300 font-semibold hover:text-cyan-200 transition text-xs"
+              >
+                {allExpanded ? "Collapse all sections" : "Expand all sections"}
+              </button>
+            </div>
+
+            <div className="space-y-2">
+              {course.modules.map((mod, index) => {
+                const modProg = progress.modules[mod.id];
+                const unlocked = isCourseModuleUnlocked(index, progress, course.modules);
+                const isPassed = modProg?.passed;
+                const bestScore = modProg?.bestScore ?? 0;
+                const isExpanded = expandedModules.has(mod.id);
+                const modPercent = isPassed ? 100 : modProg?.contentCompleted ? 50 : 0;
+
+                return (
+                  <div key={mod.id} className="border border-white/10 rounded-xl overflow-hidden">
+                    <button
+                      onClick={() => toggleModule(mod.id)}
+                      className="w-full flex items-center justify-between px-5 py-3.5 bg-white/[0.04] hover:bg-white/[0.07] transition text-left"
+                    >
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <ChevronDown
+                          className={`w-4 h-4 text-gray-500 shrink-0 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
+                        />
+                        <span className="text-sm font-bold text-white truncate">
+                          Week {mod.number} – {mod.subtitle}
+                        </span>
+                        {isPassed && (
+                          <span className="shrink-0 text-[10px] font-bold text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+                            PASSED ✓
+                          </span>
+                        )}
+                        {!unlocked && (
+                          <span className="shrink-0 text-[10px] font-bold text-zinc-400 bg-white/5 border border-white/10 px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <Lock className="w-2.5 h-2.5" /> LOCKED
+                          </span>
+                        )}
+                      </div>
+                      {/* Circular progress */}
+                      <div className="relative w-9 h-9 shrink-0 ml-3">
+                        <svg className="w-9 h-9 -rotate-90" viewBox="0 0 36 36">
+                          <circle cx="18" cy="18" r="15.5" fill="none" stroke="#27272a" strokeWidth="3" />
+                          <circle
+                            cx="18" cy="18" r="15.5" fill="none"
+                            stroke={isPassed ? "#10b981" : "#7c3aed"}
+                            strokeWidth="3"
+                            strokeDasharray={`${modPercent} 100`}
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                        <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold text-zinc-300">
+                          {modPercent}%
+                        </span>
+                      </div>
+                    </button>
+
+                    <AnimatePresence>
+                      {isExpanded && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="divide-y divide-white/5">
+                            <Link href={`/courses/${courseId}/${mod.id}`}>
+                              <div className="flex items-center justify-between px-6 py-3 hover:bg-violet-500/10 transition cursor-pointer">
+                                <div className="flex items-center gap-3">
+                                  <FileText className="w-4 h-4 text-gray-400" />
+                                  <span className="text-sm text-zinc-300">Read before you start</span>
+                                </div>
+                                <span className="text-xs text-gray-400 shrink-0">4 min</span>
+                              </div>
+                            </Link>
+
+                            {mod.topics.map((topic, ti) => (
+                              <Link key={ti} href={unlocked ? `/courses/${courseId}/${mod.id}` : "#"}>
+                                <div className={`flex items-center justify-between px-6 py-3 transition ${unlocked ? "hover:bg-violet-500/10 cursor-pointer" : "opacity-50 cursor-not-allowed"}`}>
+                                  <div className="flex items-center gap-3 min-w-0">
+                                    {unlocked
+                                      ? <PlayCircle className="w-4 h-4 text-gray-400 shrink-0" />
+                                      : <Lock className="w-4 h-4 text-gray-300 shrink-0" />}
+                                    <span className="text-sm text-zinc-300 truncate">{topic}</span>
+                                  </div>
+                                  <span className="text-xs text-gray-400 shrink-0 ml-4">{mod.estimatedTime}</span>
+                                </div>
+                              </Link>
+                            ))}
+
+                            <div className="flex items-center justify-between px-6 py-3 hover:bg-violet-500/10 transition">
+                              <div className="flex items-center gap-3">
+                                <HelpCircle className="w-4 h-4 text-purple-400" />
+                                <span className="text-sm text-zinc-300">Quiz — Module {mod.number}</span>
+                                {isPassed && (
+                                  <span className="text-[10px] text-emerald-400 font-bold">({bestScore}/5)</span>
+                                )}
+                              </div>
+                              <span className="text-xs text-gray-400">5 Questions</span>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
+
+              {/* Certificate row */}
+              <div className={`border rounded-xl overflow-hidden ${allPassed ? "border-amber-500/30 bg-amber-500/10" : "border-white/10"}`}>
+                <div className="flex items-center justify-between px-5 py-4 gap-4">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className={`w-9 h-9 rounded-full flex items-center justify-center text-lg shrink-0 ${allPassed ? "bg-amber-500/20" : "bg-white/10"}`}>
+                      {allPassed ? "🏆" : "🔒"}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-bold text-white">Certificate of Completion</p>
+                      <p className="text-xs text-gray-500 mt-0.5 truncate">
+                        {allPassed
+                          ? `Congratulations! You have completed ${course.title}.`
+                          : `Pass all ${course.modules.length} quizzes (minimum ${PASS_THRESHOLD}/5 each) to unlock`}
+                      </p>
+                    </div>
+                  </div>
+                  {allPassed ? (
+                    <Link href={`/courses/${courseId}/certificate`} className="shrink-0">
+                      <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold rounded-lg shadow-sm hover:opacity-90 transition">
+                        <GraduationCap className="w-4 h-4" /> Get Certificate
+                      </button>
+                    </Link>
+                  ) : (
+                    <div className="shrink-0 flex items-center gap-1.5 text-xs text-gray-400 font-semibold">
+                      <Lock className="w-3.5 h-3.5" /> Locked
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── RIGHT: Sticky Sidebar ── */}
+        <div className="w-full lg:w-80 xl:w-96 shrink-0 lg:sticky lg:top-24 space-y-4">
+
+          {/* Thumbnail + Price/CTA */}
+          <div className="glass-panel rounded-2xl overflow-hidden">
+            <div className="relative w-full h-48">
+              <Image
+                src={coursePhoto}
+                alt={course.title}
+                fill
+                className="object-cover object-center"
+              />
+            </div>
+
+            <div className="p-5 space-y-4">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl font-black text-white">Free</span>
+                <span className="text-sm text-gray-400 line-through">$87.99</span>
+                <span className="text-xs font-bold text-orange-600">🔥 100% free</span>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs text-gray-500 mb-1.5">
+                  <span>Your progress</span>
+                  <span className="font-bold text-violet-300">{overallPercent}%</span>
+                </div>
+                <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${overallPercent}%` }}
                     transition={{ duration: 1, ease: "easeOut" }}
-                    className={`absolute inset-y-0 left-0 bg-gradient-to-r ${c.progress} rounded-full`}
+                    className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-3 text-center">
-                  <div className="bg-white/5 rounded-xl p-3">
-                    <div className="text-2xl font-black text-white">{passedCount}</div>
-                    <div className="text-[10px] text-zinc-500 mt-0.5">Modules Passed</div>
-                  </div>
-                  <div className="bg-white/5 rounded-xl p-3">
-                    <div className="text-2xl font-black text-white">{course.modules.length - passedCount}</div>
-                    <div className="text-[10px] text-zinc-500 mt-0.5">Remaining</div>
-                  </div>
-                </div>
-                {allPassed ? (
-                  <Link href={`/courses/${courseId}/certificate`}>
-                    <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                      className="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl text-sm shadow-[0_4px_20px_rgba(245,158,11,0.3)] flex items-center justify-center gap-2">
-                      <Trophy className="w-4 h-4" />View Certificate 🎉
-                    </motion.button>
-                  </Link>
-                ) : (
-                  <Link href={`/courses/${courseId}/${course.modules[passedCount]?.id || course.modules[0].id}`}>
-                    <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                      className={`w-full py-3 bg-gradient-to-r ${c.btn} text-white font-bold rounded-xl text-sm flex items-center justify-center gap-2`}>
-                      <PlayCircle className="w-4 h-4" />
-                      {passedCount === 0 ? "Start Course" : "Continue Learning"}
-                      <ArrowRight className="w-4 h-4" />
-                    </motion.button>
-                  </Link>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Learning Path */}
-      <section className="max-w-6xl mx-auto px-6 py-14 w-full">
-        <h2 className="text-2xl font-black text-white mb-2">Learning Path</h2>
-        <p className="text-zinc-500 text-sm mb-8">Complete each module and pass the quiz to unlock the next one.</p>
-
-        <div className="space-y-4">
-          {course.modules.map((mod, index) => {
-            const modProg = progress.modules[mod.id];
-            const unlocked = isCourseModuleUnlocked(index, progress, course.modules);
-            const isPassed = modProg?.passed;
-            const isContentDone = modProg?.contentCompleted;
-            const bestScore = modProg?.bestScore ?? 0;
-            const isCurrent = !isPassed && unlocked;
-
-            return (
-              <motion.div key={mod.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.07 }}
-                className={`relative rounded-2xl border transition-all duration-300 overflow-hidden ${
-                  isPassed ? "border-emerald-500/30 bg-emerald-500/5"
-                    : isCurrent ? `${c.border} ${c.bg} ${c.glow}`
-                    : "border-white/5 bg-white/[0.02]"
-                }`}>
-                {isCurrent && <div className={`absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b ${c.accent} rounded-l-2xl`} />}
-                {isPassed && <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-emerald-400 to-teal-500 rounded-l-2xl" />}
-
-                <div className="p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5">
-                  <div className={`shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center text-2xl border ${
-                    isPassed ? "bg-emerald-500/10 border-emerald-500/20"
-                      : isCurrent ? `${c.iconBg}`
-                      : "bg-white/5 border-white/5"
-                  }`}>
-                    {isPassed ? "✅" : !unlocked ? "🔒" : mod.icon}
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap mb-1">
-                      <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Module {mod.number}</span>
-                      {isPassed && <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">COMPLETED ✓</span>}
-                      {isCurrent && <span className={`text-[10px] font-bold ${c.badgeText} ${c.badge} px-2 py-0.5 rounded-full border animate-pulse`}>IN PROGRESS</span>}
-                      {!unlocked && <span className="text-[10px] font-bold text-zinc-600 bg-white/5 border border-white/10 px-2 py-0.5 rounded-full">LOCKED 🔒</span>}
-                    </div>
-                    <h3 className={`text-base font-bold mb-1 ${!unlocked ? "text-zinc-600" : "text-white"}`}>{mod.title}</h3>
-                    <p className={`text-xs mb-3 ${!unlocked ? "text-zinc-700" : "text-zinc-500"}`}>{mod.subtitle}</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {mod.topics.slice(0, 4).map((t) => (
-                        <span key={t} className={`text-[10px] px-2 py-0.5 rounded-lg font-medium ${!unlocked ? "bg-white/3 text-zinc-700" : "bg-white/5 text-zinc-400"}`}>{t}</span>
-                      ))}
-                      {mod.topics.length > 4 && <span className="text-[10px] px-2 py-0.5 rounded-lg font-medium bg-white/5 text-zinc-500">+{mod.topics.length - 4} more</span>}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col items-end gap-3 shrink-0">
-                    {isPassed && (
-                      <div className="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-xl">
-                        <BarChart3 className="w-3.5 h-3.5 text-emerald-400" />
-                        <span className="text-sm font-black text-emerald-400">Quiz {bestScore}/5</span>
-                      </div>
-                    )}
-                    {isContentDone && !isPassed && bestScore > 0 && (
-                      <div className="flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-xl">
-                        <BarChart3 className="w-3.5 h-3.5 text-amber-400" />
-                        <span className="text-sm font-black text-amber-400">Quiz {bestScore}/5</span>
-                      </div>
-                    )}
-                    {unlocked ? (
-                      <Link href={`/courses/${courseId}/${mod.id}`}>
-                        <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
-                          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-                            isPassed ? "bg-white/5 hover:bg-white/10 text-zinc-300 border border-white/10"
-                              : `bg-gradient-to-r ${c.btn} text-white`
-                          }`}>
-                          {isPassed ? <><BookOpen className="w-4 h-4" />Review</> : isContentDone ? <><Zap className="w-4 h-4" />Take Quiz</> : <><PlayCircle className="w-4 h-4" />Start</>}
-                        </motion.button>
-                      </Link>
-                    ) : (
-                      <div className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold bg-white/5 text-zinc-600 border border-white/5 cursor-not-allowed">
-                        <Lock className="w-4 h-4" />Locked
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {unlocked && (
-                  <div className="px-6 pb-5 flex items-center gap-4 flex-wrap">
-                    <div className={`flex items-center gap-1.5 text-xs font-semibold ${isContentDone ? "text-emerald-400" : "text-zinc-600"}`}>
-                      <div className={`w-2 h-2 rounded-full ${isContentDone ? "bg-emerald-400" : "bg-zinc-700"}`} />
-                      Learning Content {isContentDone ? "— Done ✓" : "— Not started"}
-                    </div>
-                    <div className={`flex items-center gap-1.5 text-xs font-semibold ${isPassed ? "text-emerald-400" : isContentDone && bestScore > 0 ? "text-amber-400" : "text-zinc-600"}`}>
-                      <div className={`w-2 h-2 rounded-full ${isPassed ? "bg-emerald-400" : isContentDone && bestScore > 0 ? "bg-amber-400" : "bg-zinc-700"}`} />
-                      Quiz {isPassed ? `— Passed (${bestScore}/5) ✓` : bestScore > 0 ? `— ${bestScore}/5 (need ${PASS_THRESHOLD}/5)` : "— Not taken"}
-                    </div>
-                  </div>
-                )}
-              </motion.div>
-            );
-          })}
-
-          {/* Certificate Card */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-            className={`relative rounded-2xl border transition-all duration-300 overflow-hidden ${allPassed ? "border-amber-500/40 bg-amber-500/5 shadow-[0_0_40px_rgba(245,158,11,0.08)]" : "border-white/5 bg-white/[0.02]"}`}>
-            {allPassed && <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-amber-400 to-orange-500 rounded-l-2xl" />}
-            <div className="p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5">
-              <div className={`shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center text-2xl border ${allPassed ? "bg-amber-500/10 border-amber-500/20" : "bg-white/5 border-white/5"}`}>
-                {allPassed ? "🏆" : "🔒"}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Final Reward</span>
-                  {allPassed && <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">UNLOCKED 🎉</span>}
-                </div>
-                <h3 className={`text-base font-bold mb-1 ${!allPassed ? "text-zinc-600" : "text-white"}`}>Certificate of Completion</h3>
-                <p className={`text-xs ${!allPassed ? "text-zinc-700" : "text-zinc-400"}`}>
-                  {allPassed ? `Congratulations! You've completed ${course.title}.` : `Pass all ${course.modules.length} quizzes (≥${PASS_THRESHOLD}/5 each) to unlock your certificate.`}
+                <p className="text-xs text-gray-400 mt-1">
+                  {passedCount} of {course.modules.length} modules completed
                 </p>
               </div>
+
               {allPassed ? (
                 <Link href={`/courses/${courseId}/certificate`}>
-                  <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-[0_4px_20px_rgba(245,158,11,0.3)]">
-                    <GraduationCap className="w-4 h-4" />Get Certificate
-                  </motion.button>
+                  <button className="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-sm rounded-xl shadow hover:opacity-90 transition flex items-center justify-center gap-2">
+                    <Trophy className="w-4 h-4" /> View Certificate 🎉
+                  </button>
                 </Link>
               ) : (
-                <div className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold bg-white/5 text-zinc-600 border border-white/5 cursor-not-allowed">
-                  <Lock className="w-4 h-4" />Locked
-                </div>
+                <Link href={`/courses/${courseId}/${course.modules[passedCount]?.id || course.modules[0].id}`}>
+                  <button className="w-full py-3 btn-primary text-sm rounded-xl flex items-center justify-center gap-2">
+                    <Zap className="w-4 h-4" />
+                    {passedCount === 0 ? "Buy course now" : "Continue Learning"}
+                  </button>
+                </Link>
               )}
+
+              <button className="w-full py-2.5 btn-ghost text-white font-semibold text-sm rounded-xl flex items-center justify-center gap-2">
+                <MessageCircle className="w-4 h-4 text-gray-500" />
+                Send message to teacher
+              </button>
             </div>
-          </motion.div>
+          </div>
+
+          {/* Course includes */}
+          <div className="glass-panel rounded-2xl p-5">
+            <h3 className="text-sm font-bold text-white mb-4">This course includes</h3>
+            <ul className="space-y-3">
+              {INCLUDES.map(({ icon: Icon, label }) => (
+                <li key={label} className="flex items-center gap-3 text-xs text-zinc-400">
+                  <Icon className="w-4 h-4 text-gray-400 shrink-0" />
+                  {label}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Trial card */}
+          <div className="bg-gradient-to-br from-purple-600 to-indigo-700 rounded-2xl p-5 text-white shadow-lg">
+            <div className="flex items-start justify-between mb-2">
+              <p className="text-sm font-bold">10 min trial course</p>
+              <span className="text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-full">Preview</span>
+            </div>
+            <p className="text-xs text-purple-200 leading-relaxed mb-4">
+              Have a look and feel at the course with a quick trial of the first module.
+            </p>
+            <Link href={`/courses/${courseId}/${course.modules[0].id}`}>
+              <button className="w-full py-2 bg-white text-violet-800 text-xs font-bold rounded-lg hover:bg-violet-50 transition flex items-center justify-center gap-2">
+                <PlayCircle className="w-4 h-4" /> Try first module free
+              </button>
+            </Link>
+          </div>
+
         </div>
-      </section>
+      </div>
 
       <Footer />
     </div>

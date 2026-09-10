@@ -56,7 +56,7 @@ export default function PythonBasicsPage() {
 
   if (!mounted || !progress) {
     return (
-      <div className="flex flex-col min-h-screen bg-[#030303]">
+      <div className="flex flex-col min-h-screen page-shell">
         <Header />
         <div className="flex-1 flex items-center justify-center">
           <div className="w-8 h-8 border-2 border-brand-purple-500/40 border-t-brand-purple-500 rounded-full animate-spin" />
@@ -70,7 +70,7 @@ export default function PythonBasicsPage() {
   const allPassed = passedCount === PYTHON_COURSE_MODULES.length;
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#030303] relative overflow-x-clip">
+    <div className="flex flex-col min-h-screen page-shell relative overflow-x-clip">
       {/* Background glows */}
       <div className="absolute top-[10%] left-[-5%] w-[500px] h-[500px] rounded-full bg-blue-600/8 blur-[130px] pointer-events-none" />
       <div className="absolute top-[40%] right-[-5%] w-[400px] h-[400px] rounded-full bg-purple-600/8 blur-[130px] pointer-events-none" />

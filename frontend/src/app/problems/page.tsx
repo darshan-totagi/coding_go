@@ -105,7 +105,7 @@ const renderFormattedText = (text: string) => {
 
 export default function ProblemsPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center text-gray-400">Loading Workspace...</div>}>
+    <Suspense fallback={<div className="min-h-screen page-shell flex items-center justify-center text-zinc-400 animate-pulse">Loading workspace…</div>}>
       <ProblemsContent />
     </Suspense>
   );
@@ -258,7 +258,7 @@ No compile syntax errors or logical bugs found! The code structure fully passes 
   });
 
   return (
-    <div className="flex h-screen bg-[#030303] overflow-hidden">
+    <div className="flex h-screen page-shell overflow-hidden">
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
         <SubNavbar />
@@ -535,7 +535,7 @@ No compile syntax errors or logical bugs found! The code structure fully passes 
                   <button
                     onClick={handleSubmitCode}
                     disabled={executionState === "running"}
-                    className="px-5 py-2 bg-brand-purple-600 hover:bg-brand-purple-700 text-white rounded-lg text-xs font-bold shadow-glass transition flex items-center gap-1.5"
+                    className="px-5 py-2 btn-primary rounded-lg text-xs font-bold flex items-center gap-1.5 disabled:opacity-60"
                   >
                     <Send className="w-3.5 h-3.5" /> Submit
                   </button>
@@ -610,7 +610,7 @@ No compile syntax errors or logical bugs found! The code structure fully passes 
             </div>
 
             {/* Filters Bar */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-2xl glass-panel">
               {/* Search */}
               <div className="relative">
                 <Search className="absolute left-3 top-3 w-4 h-4 text-gray-500" />
@@ -657,7 +657,7 @@ No compile syntax errors or logical bugs found! The code structure fully passes 
             </div>
 
             {/* Problem Table */}
-            <div className="rounded-xl border border-white/10 overflow-hidden bg-white/5">
+            <div className="rounded-2xl border border-white/10 overflow-hidden glass-panel">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm text-left text-gray-400">
                   <thead className="text-xs uppercase bg-white/5 text-gray-400 border-b border-white/10 font-bold">
@@ -674,7 +674,7 @@ No compile syntax errors or logical bugs found! The code structure fully passes 
                     {filteredProblems.slice(0, 50).map((problem) => {
                       const isSolved = user?.solvedProblems.includes(problem.id);
                       return (
-                        <tr key={problem.id} className="hover:bg-white/[0.02] transition">
+                        <tr key={problem.id} className="hover:bg-violet-500/[0.07] transition-colors">
                           <td className="px-6 py-4">
                             {isSolved ? (
                               <CheckCircle className="w-4 h-4 text-emerald-400" />
@@ -721,7 +721,7 @@ No compile syntax errors or logical bugs found! The code structure fully passes 
                                   router.push(`/problems?id=${problem.id}`);
                                 }
                               }}
-                              className="px-3.5 py-1.5 bg-brand-purple-600 hover:bg-brand-purple-700 text-white rounded-lg text-xs font-bold transition"
+                              className="px-3.5 py-1.5 btn-primary rounded-lg text-xs"
                             >
                               Solve
                             </button>
